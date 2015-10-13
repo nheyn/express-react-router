@@ -1,0 +1,19 @@
+{
+	"name": "express-react-router",
+	"version": "0.0.1",
+	"description": "Express middleware for react-router",
+	"author": "Nick Heyn <nick@heyn.io>",
+	"main": "./lib/index.js",
+	"dependencies": {
+		"react": "*",
+		"react-router": "*",
+		"express": "*"
+	},
+	"devDependencies": {
+		"babel": "*"
+	},
+	"scripts": {
+		"prepublish": "babel ./src/ -d ./lib/"
+	},
+	"license": "MIT"
+}
