@@ -6,7 +6,8 @@
 	"main": "./lib/index.js",
 	"dependencies": {
 		"react": "*",
-		"react-router": "*",
+		"react-dom": "*",
+		"react-router": "1.0.0-rc3",
 		"express": "*"
 	},
 	"devDependencies": {

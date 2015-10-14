@@ -1,0 +1,17 @@
+{
+	"name": "express-react-router-example",
+	"version": "0.0.1",
+	"description": "A simple website that uses express-react-router",
+	"author": "Nick Heyn <nick@heyn.io>",
+	"dependencies": {
+		"babel": "*",
+		"browserify": "*",
+		"react": "*",
+		"react-router": "1.0.0-rc3",
+		"express": "*",
+		"express-react-router": "file:/var/express-react-router/"
+	},
+	"scripts": {
+		"postinstall": "babel ./src -d ./lib"
+	}
+}
