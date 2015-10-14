@@ -90,15 +90,18 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 				responseHandler(renderedReactHtml, req, res);
 			}
 			else {
-				// Send basic 404 message (if not included in the route)
-				res.status(404).send({
-					errorName: '404',
-					errorMessage: `Location: ${location}`
-				});
+				next();
 			}
 		});
 	});
 	router.use(expressRouterFromRoute);
+	router.use((req, res) => {
+		// Send basic 404 message
+		res.status(404).send({
+			errorName: '404',
+			errorMessage: `Page Not Found: ${req.url}`
+		});
+	});
 	router.use((err, req, res, next) => { errorHandler(err, req, res); });
 
 	return router;

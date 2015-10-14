@@ -1,9 +1,9 @@
 /**
  * @flow
  */
-var path = require('path');
-var express = require('express');
-var React = require('react');
+const path = require('path');
+const express = require('express');
+const React = require('react');
 
 type RouteFilter = (route: ReactRouterRoute) => bool;
 
@@ -49,27 +49,18 @@ class RouteParser {
 	 * @return	{ExpressRouter}		The router that handles all non page load requests
 	 */
 	getExpressRouter(): ExpressRouter {
-		var router = express.Router();
-		this._getExpressRouters().forEach(
-			(routerSettings) => {
-				router.use(routerSettings.path, routerSettings.router);
-			}
-		);
+		let router = express.Router();
+		this._getExpressRouterRoutes().forEach((route) => {
+			router.use(getPathOf(route), getRouterFrom(route));
+		});
 		return router;
 	}
 
 /*------------------------------------------------------------------------------------------------*/
 //	Private Methods
 /*------------------------------------------------------------------------------------------------*/
-	_getExpressRouters(): Array<{ path: string; router: ExpressRouter; }> {
-		return this._flattenAndFilteredChildren(hasExpressRouterRecursive)
-				.filter(hasExpressRouter)
-				.map((route) => {
-					return {
-						path: getPathOf(route),
-						router: getRouterFrom(route)
-					};
-				});
+	_getExpressRouterRoutes(): Array<ReactRouterRoute> {
+		return this._flattenAndFilteredChildren(hasExpressRouterRecursive).filter(hasExpressRouter);
 	}
 
 	_getReactRouterRoutesChildren(): Array<ReactRouterRoute> {
@@ -104,7 +95,7 @@ function hasExpressRouterRecursive(route: ReactRouterRoute): bool {
 	if(!route.props.children) return false;
 
 	// Check if any child has router
-	var numberOfChildrenWithRouter = filterChildren(
+	const numberOfChildrenWithRouter = filterChildren(
 		route.props.children,
 		hasExpressRouterRecursive
 	).length;
@@ -115,7 +106,7 @@ function filterChildren(
 	children: ?(ReactRouterRoute | Array<ReactRouterRoute>),
 	shouldKeep: RouteFilter
 ): Array<ReactRouterRoute> {
-	var filteredChildren = [];
+	let filteredChildren = [];
 	React.Children.forEach(children, (child, i) => {
 		// Don't include null children
 		if(!child) return;
@@ -142,11 +133,11 @@ function flattenRoutes(
 ): Array<ReactRouterRoute> {
 	if(routes.length === 0) return [];
 
-	var flattenedRoutes = [];
-	var flattener = (currRoutes, prefix) => {
+	let flattenedRoutes = [];
+	const flattener = (currRoutes, prefix) => {
 		//NOTE, Not using React.Children.map because github.com/facebook/react/issues/2872
 		React.Children.forEach(currRoutes, (route) => {
-			var currPath = getPathOf(route, prefix);
+			const currPath = getPathOf(route, prefix);
 
 			flattenedRoutes.push(React.cloneElement(route, { path: currPath }));
 			if(route.props.children) flattener(route.props.children, currPath);

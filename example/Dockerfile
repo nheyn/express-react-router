@@ -10,6 +10,7 @@ RUN npm install browserify
 RUN npm install react
 RUN npm install react-dom
 RUN npm install react-router@1.0.0-rc3
+RUN npm install history
 RUN npm install express
 # FOR RE-BUILD SPEED #
 
