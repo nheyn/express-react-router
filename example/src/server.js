@@ -13,7 +13,7 @@ function responseHandler(reactHtmlString, req, res) {
 	</head>
 	<body>
 		<div id="reactContent">${reactHtmlString}</div>
-		<script src="app.js"><script />
+		<script src="/app.js"></script>
 	</body>
 </html>
 `;

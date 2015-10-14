@@ -1,7 +1,7 @@
 var path = require('path');
 var express = require('express');
 var React = require('react');
-var { Route, IndexRoute, Link } = require('react-router');
+var { Router, Route, IndexRoute, Link } = require('react-router');
 var { ExpressRoute } = require('express-react-router');
 
 /*------------------------------------------------------------------------------------------------*/
@@ -9,6 +9,7 @@ var { ExpressRoute } = require('express-react-router');
 /*------------------------------------------------------------------------------------------------*/
 var PageWrapper =	React.createClass({
 	render: function() {
+		//ERROR, <Links /> are reloading the entier page (?????????)
 		return (
 			<div>
 				<ul>
@@ -46,30 +47,33 @@ var SubPageOne = 	React.createClass({ render: function() { return <div>SubPageOn
 var SubPageTwo = 	React.createClass({ render: function() { return <div>SubPageTwo</div>; } });
 
 /*------------------------------------------------------------------------------------------------*/
-//	--- Routers / Funcs / Files---
+//	--- Routers / Funcs / Files ---
 /*------------------------------------------------------------------------------------------------*/
-var func = function(req, res) {
-	res.send({ test: 'response' });
-};
-var router = express.Router();
-router.use(func);
+var func, router, errFunc, errRouter, appSrc, indenticonSrc, faviconSrc, filesSrc;
+if(typeof window === 'undefined') {	// Peform only on the server
+	func = function(req, res) {
+		res.send({ test: 'response' });
+	};
+	router = express.Router();
+	router.use(func);
 
-var errFunc = function(req, res) {
-	throw new Error('Test Error');
-};
-var errRouter = express.Router();
-errRouter.use(errFunc);
+	errFunc = function(req, res) {
+		throw new Error('Test Error');
+	};
+	errRouter = express.Router();
+	errRouter.use(errFunc);
 
-var appSrc =		path.join(__dirname, '../app.js');
-var indenticonSrc =	path.join(__dirname, '../public/identicon.png');
-var faviconSrc =	path.join(__dirname, '../public/favicon.ico');
-var filesSrc =		path.join(__dirname, '../public/');
+	appSrc =		path.join(__dirname, '../app.js');
+	indenticonSrc =	path.join(__dirname, '../public/identicon.png');
+	faviconSrc =	path.join(__dirname, '../public/favicon.ico');
+	filesSrc =		path.join(__dirname, '../public/');
+}
 
 /*------------------------------------------------------------------------------------------------*/
 //	--- Create Route ---
 /*------------------------------------------------------------------------------------------------*/
 var routes = (
-	<Route>
+	<Router>
 		<Route			path="/"			component={PageWrapper}>
 			<IndexRoute							component={PageOne} />
 			<Route 			path="pageTwo"		component={PageTwo}>
@@ -85,7 +89,7 @@ var routes = (
 			<ExpressRoute	path="errorFunc"	callback={errFunc} />
 			<ExpressRoute	path="errorRouter"	router={errRouter} />
 		</Route>
-	</Route>
+	</Router>
 );
 
 /*------------------------------------------------------------------------------------------------*/

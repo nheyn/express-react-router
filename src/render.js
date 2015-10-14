@@ -1,6 +1,7 @@
 /**
  * @flow
  */
+const ReactDOM = require('react-dom');
 const React = require('react');
 
 const RouteParser = require('./RouteParser');
@@ -37,8 +38,8 @@ function render(settings: ClientSettings): ReactComponent<any, any, any> {
 
 	// Render routes to given container
 	return settings.callback?
-			React.render(routes, container, settings.callback):
-			React.render(routes, container);
+			ReactDOM.render(routes, container, settings.callback):
+			ReactDOM.render(routes, container);
 }
 
 /*------------------------------------------------------------------------------------------------*/
