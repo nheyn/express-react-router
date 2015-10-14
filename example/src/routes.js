@@ -1,7 +1,7 @@
 var path = require('path');
 var express = require('express');
 var React = require('react');
-var { Route, Link } = require('react-router');
+var { Route, IndexRoute, Link } = require('react-router');
 var { ExpressRoute } = require('express-react-router');
 
 /*------------------------------------------------------------------------------------------------*/
@@ -68,25 +68,27 @@ var filesSrc =		path.join(__dirname, '../public/');
 /*------------------------------------------------------------------------------------------------*/
 //	--- Create Route ---
 /*------------------------------------------------------------------------------------------------*/
-var route = (
-	<Route component={PageWrapper}>
-		<Route path="*" component={PageOne} />
-		<Route path="pageTwo" component={PageTwo}>
-			<Route path="subPageOne" component={SubPageOne} />
-			<Route path="subPageTwo" component={SubPageTwo} />
-			<ExpressRoute path="indenticon.png" src={indenticonSrc} />
+var routes = (
+	<Route>
+		<Route path="/" component={PageWrapper}>
+			<IndexRoute							component={PageOne} />
+			<Route path="pageTwo"				component={PageTwo}>
+				<Route path="subPageOne"			component={SubPageOne} />
+				<Route path="subPageTwo"			component={SubPageTwo} />
+				<ExpressRoute path="indenticon.png"	src={indenticonSrc} />
+			</Route>
+			<ExpressRoute path="favicon.ico"	src={faviconSrc} />
+			<ExpressRoute path="app.js"			src={appSrc} />
+			<ExpressRoute path="files"			src={filesSrc} />
+			<ExpressRoute path="func"			callback={func} />
+			<ExpressRoute path="router"			router={router} />
+			<ExpressRoute path="errorFunc"		callback={errFunc} />
+			<ExpressRoute path="errorRouter"	router={errRouter} />
 		</Route>
-		<ExpressRoute path="favicon.ico" src={faviconSrc} />
-		<ExpressRoute path="app.js" src={appSrc} />
-		<ExpressRoute path="files" src={filesSrc} />
-		<ExpressRoute path="func" callback={func} />
-		<ExpressRoute path="router" router={router} />
-		<ExpressRoute path="errorFunc" callback={errFunc} />
-		<ExpressRoute path="errorRouter" router={errRouter} />
 	</Route>
 );
 
 /*------------------------------------------------------------------------------------------------*/
 //	--- Exports ---
 /*------------------------------------------------------------------------------------------------*/
-module.exports = route;
+module.exports = routes;

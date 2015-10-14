@@ -16,7 +16,17 @@ Also includes a new react render function for the client side, that helps with c
 Basic usage is given above. More detailed documentation is before class/function definitions within the code.
 
 ### Example
-*TODO: create example*
+A basic site using express-react-router is in the /example/ directory.
+To run using docker, run:
+```
+cd <path to repo>
+docker build -t express-react-router/example ./example
+docker build															\
+	-d	-p <external port>:80											\
+	-v "$(pwd)"/package.json:/var/express-react-router/package.json		\
+	-v "$(pwd)"/src:/var/express-react-router/src						\
+	express-react-router/example
+```
 
 ### Plans
 * Add option client to turn on react's touch events

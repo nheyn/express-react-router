@@ -19,7 +19,7 @@ function responseHandler(reactHtmlString, req, res) {
 `;
 
 	// Send to Client
-	req.send(pageHtml);
+	res.send(pageHtml);
 }
 
 function errorHandler(err, req, res) {
@@ -43,16 +43,18 @@ function errorHandler(err, req, res) {
 `;
 
 	// Send to Client
-	req.status(500).send(pageHtml);
+	res.status(500).send(pageHtml);
 }
 
 // Create Server
-var app = express();
-app.use(createExpressRouter({
+var reactRouter = createExpressRouter({
 	routes: routes,
 	responseHandler: responseHandler,
 	errorHandler: errorHandler
-}));
+});
+
+var app = express();
+app.use(reactRouter);
 
 // Start Server
 app.listen(80);
