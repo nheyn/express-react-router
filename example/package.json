@@ -8,6 +8,7 @@
 		"browserify": "*",
 		"react": "*",
 		"react-router": "1.0.0-rc3",
+		"history": "*",
 		"express": "*",
 		"express-react-router": "file:/var/express-react-router/"
 	},

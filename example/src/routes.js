@@ -2,6 +2,7 @@ var path = require('path');
 var express = require('express');
 var React = require('react');
 var { Router, Route, IndexRoute, Link } = require('react-router');
+var createBrowserHistory = require('history/lib/createBrowserHistory');
 var { ExpressRoute } = require('express-react-router');
 
 /*------------------------------------------------------------------------------------------------*/
@@ -72,8 +73,9 @@ if(typeof window === 'undefined') {	// Peform only on the server
 /*------------------------------------------------------------------------------------------------*/
 //	--- Create Route ---
 /*------------------------------------------------------------------------------------------------*/
+var history = typeof window === 'undefined'? null: createBrowserHistory();
 var routes = (
-	<Router>
+	<Router history={history} >
 		<Route			path="/"			component={PageWrapper}>
 			<IndexRoute							component={PageOne} />
 			<Route 			path="pageTwo"		component={PageTwo}>
