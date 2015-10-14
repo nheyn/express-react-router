@@ -2,6 +2,7 @@
  * @flow
  */
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 //const { match, RoutingContext } = require('react-router');
 //ERROR, flow error
@@ -81,7 +82,9 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 						typeof settings.props === 'function'? settings.props(req): settings.props:
 						{}
 				);
-				const renderedReactHtml = React.renderToString(<RoutingContext {...props} />);
+				const renderedReactHtml = ReactDOMServer.renderToString(
+					<RoutingContext {...props} />
+				);
 
 				// Send to client
 				responseHandler(renderedReactHtml, req, res);
@@ -98,7 +101,7 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 	router.use(expressRouterFromRoute);
 	router.use((err, req, res, next) => { errorHandler(err, req, res); });
 
-	return express.Router();
+	return router;
 }
 
 /*------------------------------------------------------------------------------------------------*/
