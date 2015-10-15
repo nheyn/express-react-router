@@ -4,6 +4,10 @@
 	"description": "Express middleware for react-router",
 	"author": "Nick Heyn <nick@heyn.io>",
 	"main": "./lib/index.js",
+	"repository" : {
+		"type" : "git",
+		"url" : "https://github.com/nheyn/express-react-router"
+	},
 	"dependencies": {
 		"react": "*",
 		"react-dom": "*",
