@@ -1,3 +1,5 @@
+require('babel/polyfill');
+
 var React = require('react');
 var { render } = require('express-react-router');
 var routes = require('./routes');
