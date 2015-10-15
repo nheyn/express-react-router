@@ -10,7 +10,37 @@ Also includes a new react render function for the client side, that helps with c
 * Use the same react-router route (w/ express routes) on both the client and server
 
 ### Usage
-*TODO: add basic usage to README*
+See basic example in /example/ directory (see below for more information).
+
+#### On Server
+To create an express middleware router for react-router routes use 'createExpressRouter':
+```
+var ExpressReactRouter = require('express-react-router');
+
+var reactRouterMiddleware = ExpressReactRouter.createExpressRouter({
+	routes: routes,		// [Required] React Router routes
+	props: { },			// [Optional] Props to send to the upper level componet in the route
+	responseHandler: function(reactHtmlString, req, res) {				// [Required]
+		// Send the 'reactHtmlString' to the client (using express res)
+	},
+	errorHandler: function(err, req, res) { 							// [Optional]
+		// Handle the given error
+	}
+});
+```
+
+#### On Client
+To render the routes in the browser use 'render':
+```
+ExpressReactRouter.render({
+	routes: routes,			// [Required] React Router routes
+	props: { },				// [Optional] Props to send to the upper level componet in the route
+	container: el,			// [Required] The html element to render the route in
+	callback: function() {	// [Optional] The callback call after rendering
+		// Same as thrid argument to 'ReactDOM.render'
+	}
+});
+```
 
 ### Documentation
 Basic usage is given above. More detailed documentation is before class/function definitions within the code.
