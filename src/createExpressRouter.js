@@ -15,7 +15,6 @@ const RouteParser = require('./RouteParser');
 
 type ServerSettings = {
 	routes: ReactRouterRoute,
-	props: ?({[key: string]: any} | (req: ExpressReq) => {[key: string]: any}),
 	responseHandler: (reactStr: string, req: ExpressReq, res: ExpressRes) => void,
 	errorHandler: ?(err: Error, req: ExpressReq, res: ExpressRes) => void,
 };
@@ -25,7 +24,6 @@ type ServerSettings = {
  *
  * @param settings			{object}
  *			routes				{ReactRouterRoute}		The router to render
- *			[props]				{Object}				Props to add to the top-level handler
  *			responseHandler		{						A functions that should send the response
  *														to an initial page load request
  *	 								(	string,				The rended html for the current route
@@ -76,14 +74,8 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 			}
 			else if(renderProps) {
 				// Render react-router handler
-				const props = Object.assign({},
-					renderProps,
-					settings.props?
-						typeof settings.props === 'function'? settings.props(req): settings.props:
-						{}
-				);
 				const renderedReactHtml = ReactDOMServer.renderToString(
-					<RoutingContext {...props} />
+					<RoutingContext {...renderProps} />
 				);
 
 				// Send to client

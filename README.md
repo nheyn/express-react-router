@@ -19,7 +19,6 @@ var ExpressReactRouter = require('express-react-router');
 
 var reactRouterMiddleware = ExpressReactRouter.createExpressRouter({
 	routes: routes,		// [Required] React Router routes
-	props: { },			// [Optional] Props to send to the upper level componet in the route
 	responseHandler: function(reactHtmlString, req, res) {				// [Required]
 		// Send the 'reactHtmlString' to the client (using express res)
 	},
@@ -34,7 +33,6 @@ To render the routes in the browser use 'render':
 ```
 ExpressReactRouter.render({
 	routes: routes,			// [Required] React Router routes
-	props: { },				// [Optional] Props to send to the upper level componet in the route
 	container: el,			// [Required] The html element to render the route in
 	callback: function() {	// [Optional] The callback call after rendering
 		// Same as thrid argument to 'ReactDOM.render'
