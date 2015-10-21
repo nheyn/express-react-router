@@ -19,7 +19,8 @@ var ExpressReactRouter = require('express-react-router');
 
 var reactRouterMiddleware = ExpressReactRouter.createExpressRouter({
 	routes: routes,		// [Required] React Router routes
-	responseHandler: function(reactHtmlString, req, res) {				// [Required]
+	props: { },			// [Optional] Props to send to the upper level componet in the route
+	initialLoadHandler: function(reactHtmlString, req, res) {				// [Required]
 		// Send the 'reactHtmlString' to the client (using express res)
 	},
 	errorHandler: function(err, req, res) { 							// [Optional]

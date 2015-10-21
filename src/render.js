@@ -5,6 +5,7 @@ const ReactDOM = require('react-dom');
 const React = require('react');
 
 const RouteParser = require('./RouteParser');
+const addPropsToRouter = require('./addPropsToRouter');
 
 type ClientSettings = {
 	routes: ReactRouterRoute,
@@ -23,14 +24,17 @@ type ClientSettings = {
  * @return			{ReactComponent}		The render componet (see return of 'React.render')
  */
 function render(settings: ClientSettings): ReactComponent<any, any, any> {
-	// Get container
-	if(!settings.container) throw new Error('A container is required to render');
-	const container = settings.container;
-
 	// Get route
 	if(!settings.routes) throw new Error('Route is required to render');
 	const routerParser = new RouteParser(settings.routes);
-	const routes = routerParser.getReactRouterRoute();
+	const parsedRoutes = routerParser.getReactRouterRoute();
+
+	// Add props
+	const routes = settings.props? addPropsToRouter(parsedRoutes, settings.props): parsedRoutes;
+
+	// Get container
+	if(!settings.container) throw new Error('A container is required to render');
+	const container = settings.container;
 
 	// Render routes to given container
 	return settings.callback?

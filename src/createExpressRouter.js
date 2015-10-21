@@ -12,10 +12,12 @@ const RoutingContext = ReactRouter.RoutingContext;
 //*/
 
 const RouteParser = require('./RouteParser');
+const addPropsToRouter = require('./addPropsToRouter');
 
 type ServerSettings = {
 	routes: ReactRouterRoute,
-	responseHandler: (reactStr: string, req: ExpressReq, res: ExpressRes) => void,
+	props: ?({[key: string]: any} | (req: ExpressReq) => {[key: string]: any}),
+	initialLoadHandler: (reactStr: string, req: ExpressReq, res: ExpressRes) => void,
 	errorHandler: ?(err: Error, req: ExpressReq, res: ExpressRes) => void,
 };
 
@@ -24,7 +26,8 @@ type ServerSettings = {
  *
  * @param settings			{object}
  *			routes				{ReactRouterRoute}		The router to render
- *			responseHandler		{						A functions that should send the response
+ *			[props]				{Object}				Props to add to the top-level handler
+ *			initialLoadHandler	{						A functions that should send the response
  *														to an initial page load request
  *	 								(	string,				The rended html for the current route
  *										ExpressReq,			The express request
@@ -50,18 +53,19 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 	const expressRouterFromRoute = routerParser.getExpressRouter();
 
 	// Get request handlers
-	if(!settings.responseHandler) throw new Error('The responseHandler is required for the server');
-	const responseHandler = settings.responseHandler;
+	const initialLoadHandler = settings.initialLoadHandler;
+	if(!initialLoadHandler) throw new Error('The initialLoadHandler is required for the server');
+
 	const errorHandler = settings.errorHandler? settings.errorHandler: defaultErrorHandler;
 
-	if(typeof responseHandler !== 'function' || typeof errorHandler !== 'function') {
-		throw new Error('The responseHandler / errorHandler must be a function');
+	if(typeof initialLoadHandler !== 'function' || typeof errorHandler !== 'function') {
+		throw new Error('The initialLoadHandler / errorHandler must be a function');
 	}
 
 	// Create express router
 	let router = express.Router();
 	router.use((req, res, next) => {
-		// Get current react-router route
+		// Render current route
 		const location = req.url;
 		match({ routes, location }, (err, redirectLocation, renderProps) => {
 			if(err) {
@@ -73,13 +77,22 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 				res.redirect(302, redirectLocation.pathname + redirectLocation.search)
 			}
 			else if(renderProps) {
+				let routingContextElement = <RoutingContext {...renderProps} />;
+
+				// Add props
+				if(settings.props) {
+					const props = typeof settings.props === 'function'?
+									settings.props(req):
+									settings.props;
+
+					routingContextElement = addPropsToRouter(routingContextElement, props);
+				}
+
 				// Render react-router handler
-				const renderedReactHtml = ReactDOMServer.renderToString(
-					<RoutingContext {...renderProps} />
-				);
+				const renderedReactHtml = ReactDOMServer.renderToString(routingContextElement);
 
 				// Send to client
-				responseHandler(renderedReactHtml, req, res);
+				initialLoadHandler(renderedReactHtml, req, res);
 			}
 			else {
 				next();
@@ -94,7 +107,9 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 			errorMessage: `Page Not Found: ${req.url}`
 		});
 	});
-	router.use((err, req, res, next) => { errorHandler(err, req, res); });
+	router.use((err, req, res, next) => {
+		errorHandler(err, req, res);
+	});
 
 	return router;
 }
