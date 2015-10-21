@@ -12,9 +12,7 @@ const React = require('react');
  * @return			{ReactRouter}	The router that will add props to the rendered coponet
  */
 function addPropsToRouter(router, props) {
-console.log('addPropsToRouter(router, ', Object.keys(props), ')');
 	const createElement = (Component, reactRouterProps) => {
-console.log('createElement(Component, reactRouterProps)');
 		return <Component {...props} {...reactRouterProps} />;
 	};
 	return React.cloneElement(router, { createElement });
