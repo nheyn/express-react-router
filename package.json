@@ -21,11 +21,12 @@
 		"flow-bin": "^0.20.0"
 	},
 	"scripts": {
-		"flow": "./node_modules/.bin/flow",
+		"flow": "(cd src && ./node_modules/.bin/flow)",
+		"flow:stop": "(cd src && ./node_modules/.bin/flow stop)",
 		"check": "npm run flow",
 		"build": "npm run check && babel ./src/ -d ./lib/",
 		"prepublish": "npm run build",
-		"clean": "rm -rf ./lib/ && ./node_modules/.bin/flow stop"
+		"clean": "rm -rf ./lib/ && npm flow:stop"
 	},
 	"engines": {
 		"node": "v5"
