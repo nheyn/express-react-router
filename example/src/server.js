@@ -3,7 +3,7 @@ var { createExpressRouter } = require('express-react-router');
 var routes = require('./routes');
 
 // Request handlers
-function responseHandler(reactHtmlString, req, res) {
+function initialLoadHandler(reactHtmlString, req, res) {
 	// Create html for the full page
 	var pageHtml =
 `
@@ -49,7 +49,7 @@ function errorHandler(err, req, res) {
 // Create Server
 var reactRouter = createExpressRouter({
 	routes: routes,
-	responseHandler: responseHandler,
+	initialLoadHandler: initialLoadHandler,
 	errorHandler: errorHandler
 });
 
