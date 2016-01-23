@@ -1,8 +1,8 @@
 /**
  * @flow
  */
-var React = require('react');
-var express = require('express');
+import React from 'react';
+import express from 'express';
 
 /*------------------------------------------------------------------------------------------------*/
 //	--- Express Route Handler Definitions ---
@@ -10,7 +10,7 @@ var express = require('express');
 /**
  * A React class, that can be use instead of React Router's Route class, that can
  */
-var ExpressRoute = React.createClass({
+const ExpressRoute = React.createClass({
 	statics: {
 		hasRouter: true,
 		getRouter(props: {[key: string]: any}): ExpressRouter {
@@ -21,7 +21,7 @@ var ExpressRoute = React.createClass({
 			throw new Error("RouterRoute must have 'callback', 'router' or 'src' prop.");
 		},
 		getRouterFromCallback(callback: ExpressCallback): ExpressRouter {
-			var router = express.Router();
+			let router = express.Router();
 			router.use(callback);
 			return router;
 		},
@@ -40,8 +40,4 @@ var ExpressRoute = React.createClass({
 		throw new Error('RouterRoute should never be rendered');
 	}
 });
-
-/*------------------------------------------------------------------------------------------------*/
-//	--- Exports ---
-/*------------------------------------------------------------------------------------------------*/
-module.exports = ExpressRoute;
+export default ExpressRoute;

@@ -1,6 +1,6 @@
-/*------------------------------------------------------------------------------------------------*/
-//	--- Exports ---
-/*------------------------------------------------------------------------------------------------*/
-module.exports.createExpressRouter = require('./createExpressRouter');
-module.exports.render = require('./render');
-module.exports.ExpressRoute = require('./ExpressRoute');
+/**
+ * //NOTE, not checking because flow says the modules don't exist (look in this directory to see it is wrong)
+ */
+export { default as createExpressRouter } from './createExpressRouter';
+export { default as render } from './render';
+export { default as ExpressRoute } from './ExpressRoute';
