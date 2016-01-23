@@ -17,8 +17,12 @@
 		"browserify": "13",
 		"express-react-router": "file:/var/express-react-router/"
 	},
+	"devDependencies": {
+	},
 	"scripts": {
-		"build": "babel ./src -d ./lib && browserify ./lib/client.js -o ./app.js",
+		"build:babel": "babel ./src -d ./lib",
+		"build:browserify": "node browserify.js",
+		"build": "npm run build:babel && npm run build:browserify",
 		"start": "npm run build && node ./lib/server.js"
 	},
 	"engines": {
