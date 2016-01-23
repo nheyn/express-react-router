@@ -1,8 +1,7 @@
 import path from 'path';
 import express from 'express';
 import React from 'react';
-import { Router, Route, IndexRoute, Link } from 'react-router';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
+import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router';
 import { ExpressRoute } from 'express-react-router';
 
 /*------------------------------------------------------------------------------------------------*/
@@ -51,7 +50,7 @@ const SubPageTwo = 	React.createClass({ render: function() { return <div>SubPage
 //	--- Routers / Funcs / Files ---
 /*------------------------------------------------------------------------------------------------*/
 let func, router, errFunc, errRouter, appSrc, indenticonSrc, faviconSrc, filesSrc;
-if(typeof window === 'undefined') {	// Preform only on the server
+if(typeof window === 'undefined') {	// Peform only on the server
 	func = function(req, res) {
 		res.send({ test: 'response' });
 	};
@@ -73,9 +72,8 @@ if(typeof window === 'undefined') {	// Preform only on the server
 /*------------------------------------------------------------------------------------------------*/
 //	--- Create Route ---
 /*------------------------------------------------------------------------------------------------*/
-const history = typeof window === 'undefined'? null: createBrowserHistory();
 export default (
-	<Router history={history} >
+	<Router history={browserHistory} >
 		<Route			path="/"			component={PageWrapper}>
 			<IndexRoute							component={PageOne} />
 			<Route 			path="pageTwo"		component={PageTwo}>

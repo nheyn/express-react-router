@@ -4,7 +4,7 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
-import { match, RoutingContext } from 'react-router';
+import { match, RouterContext } from 'react-router';
 
 import RouteParser from './RouteParser';
 import addPropsToRouter from './addPropsToRouter';
@@ -72,7 +72,7 @@ export default function createExpressRouter(settings: ServerSettings): ExpressRo
 				res.redirect(302, redirectLocation.pathname + redirectLocation.search)
 			}
 			else if(renderProps) {
-				let routingContextElement = <RoutingContext {...renderProps} />;
+				let routerContextElement = <RouterContext {...renderProps} />;
 
 				// Add props
 				if(settings.props) {
@@ -80,11 +80,11 @@ export default function createExpressRouter(settings: ServerSettings): ExpressRo
 									settings.props(req):
 									settings.props;
 
-					routingContextElement = addPropsToRouter(routingContextElement, props);
+					routerContextElement = addPropsToRouter(routerContextElement, props);
 				}
 
 				// Render react-router handler
-				const renderedReactHtml = ReactDOMServer.renderToString(routingContextElement);
+				const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);
 
 				// Send to client
 				initialLoadHandler(renderedReactHtml, req, res);
