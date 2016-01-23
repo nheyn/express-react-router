@@ -1,9 +1,9 @@
 /**
  * @flow
  */
-const path = require('path');
-const express = require('express');
-const React = require('react');
+import path from 'path';
+import express from 'express';
+import React from 'react';
 
 type RouteFilter = (route: ReactRouterRoute) => bool;
 
@@ -13,7 +13,7 @@ type RouteFilter = (route: ReactRouterRoute) => bool;
 /**
  * A class that parse the react router routes, that also contains express http handlers.
  */
-class RouteParser {
+export default class RouteParser {
 	_route: ReactRouterRoute;
 
 	/**
@@ -162,8 +162,3 @@ function getRouterFrom(route: ReactRouterRoute): ExpressRouter {
 
 	return route.type.getRouter(route.props);
 }
-
-/*------------------------------------------------------------------------------------------------*/
-//	--- Exports ---
-/*------------------------------------------------------------------------------------------------*/
-module.exports = RouteParser;

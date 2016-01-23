@@ -1,11 +1,11 @@
 /**
  * @flow
  */
-const ReactDOM = require('react-dom');
-const React = require('react');
+import ReactDOM from 'react-dom';
+import React from 'react';
 
-const RouteParser = require('./RouteParser');
-const addPropsToRouter = require('./addPropsToRouter');
+import RouteParser from './RouteParser';
+import addPropsToRouter from './addPropsToRouter';
 
 type ClientSettings = {
 	routes: ReactRouterRoute,
@@ -23,7 +23,7 @@ type ClientSettings = {
  *
  * @return			{ReactComponent}		The render componet (see return of 'React.render')
  */
-function render(settings: ClientSettings): ReactComponent<any, any, any> {
+export default function render(settings: ClientSettings): ReactComponent<any, any, any> {
 	// Get route
 	if(!settings.routes) throw new Error('Route is required to render');
 	const routerParser = new RouteParser(settings.routes);
@@ -41,8 +41,3 @@ function render(settings: ClientSettings): ReactComponent<any, any, any> {
 			ReactDOM.render(routes, container, settings.callback):
 			ReactDOM.render(routes, container);
 }
-
-/*------------------------------------------------------------------------------------------------*/
-//	--- Exports ---
-/*------------------------------------------------------------------------------------------------*/
-module.exports = render;

@@ -1,11 +1,12 @@
-var express = require('express');
-var { createExpressRouter } = require('express-react-router');
-var routes = require('./routes');
+import express from 'express';
+import { createExpressRouter } from 'express-react-router';
+
+import routes from './routes';
 
 // Request handlers
-function responseHandler(reactHtmlString, req, res) {
+function initialLoadHandler(reactHtmlString, req, res) {
 	// Create html for the full page
-	var pageHtml =
+	const pageHtml =
 `
 <html>
 	<head>
@@ -24,7 +25,7 @@ function responseHandler(reactHtmlString, req, res) {
 
 function errorHandler(err, req, res) {
 	// Create html for error
-	var pageHtml =
+	const pageHtml =
 `
 <html>
 	<head>
@@ -47,14 +48,20 @@ function errorHandler(err, req, res) {
 }
 
 // Create Server
-var reactRouter = createExpressRouter({
+const reactRouter = createExpressRouter({
 	routes: routes,
-	responseHandler: responseHandler,
+	initialLoadHandler: initialLoadHandler,
 	errorHandler: errorHandler
 });
 
-var app = express();
+let app = express();
+app.use((req, res, next) => {
+	const { url, method, params, query } = req;
+	console.log(`[${url}]: `, { method, params, query });
+	next();
+});
 app.use(reactRouter);
 
 // Start Server
 app.listen(80);
+console.log('listening on port 80');

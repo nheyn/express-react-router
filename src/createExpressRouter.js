@@ -1,18 +1,13 @@
 /**
  * @flow
  */
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const express = require('express');
-//const { match, RoutingContext } = require('react-router');
-//ERROR, flow error
-const ReactRouter = require('react-router');
-const match = ReactRouter.match;
-const RoutingContext = ReactRouter.RoutingContext;
-//*/
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import express from 'express';
+import { match, RouterContext } from 'react-router';
 
-const RouteParser = require('./RouteParser');
-const addPropsToRouter = require('./addPropsToRouter');
+import RouteParser from './RouteParser';
+import addPropsToRouter from './addPropsToRouter';
 
 type ServerSettings = {
 	routes: ReactRouterRoute,
@@ -45,7 +40,7 @@ type ServerSettings = {
  * @return					{ExpressRouter}				The express router to add to the express
  *														application
  */
-function createExpressRouter(settings: ServerSettings): ExpressRouter {
+export default function createExpressRouter(settings: ServerSettings): ExpressRouter {
 	// Get route
 	if(!settings.routes) throw new Error('Route is required for the server');
 	const routerParser = new RouteParser(settings.routes);
@@ -77,7 +72,7 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 				res.redirect(302, redirectLocation.pathname + redirectLocation.search)
 			}
 			else if(renderProps) {
-				let routingContextElement = <RoutingContext {...renderProps} />;
+				let routerContextElement = <RouterContext {...renderProps} />;
 
 				// Add props
 				if(settings.props) {
@@ -85,11 +80,11 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 									settings.props(req):
 									settings.props;
 
-					routingContextElement = addPropsToRouter(routingContextElement, props);
+					routerContextElement = addPropsToRouter(routerContextElement, props);
 				}
 
 				// Render react-router handler
-				const renderedReactHtml = ReactDOMServer.renderToString(routingContextElement);
+				const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);
 
 				// Send to client
 				initialLoadHandler(renderedReactHtml, req, res);
@@ -120,8 +115,3 @@ function createExpressRouter(settings: ServerSettings): ExpressRouter {
 function defaultErrorHandler(err: Error, req: ExpressReq, res: ExpressRes) {
 	 res.status(500).send({ errorName: err.name, errorMessage: err.message });
 }
-
-/*------------------------------------------------------------------------------------------------*/
-//	--- Exports ---
-/*------------------------------------------------------------------------------------------------*/
-module.exports = createExpressRouter;

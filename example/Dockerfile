@@ -15,6 +15,7 @@ RUN npm install
 WORKDIR /var/www/
 
 COPY .babelrc /var/www/.babelrc
+COPY browserify.js /var/www/browserify.js
 COPY package.json /var/www/package.json
 COPY src/ /var/www/src/
 COPY public/ /var/www/public/

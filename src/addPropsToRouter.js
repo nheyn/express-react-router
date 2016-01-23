@@ -1,7 +1,7 @@
 /**
  * @flow
  */
-const React = require('react');
+import React from 'react';
 
 /**
  * Add props to a the top level component when a route is rendered.
@@ -11,14 +11,9 @@ const React = require('react');
  *
  * @return			{ReactRouter}	The router that will add props to the rendered coponet
  */
-function addPropsToRouter(router, props) {
+export default function addPropsToRouter(router, props) {
 	const createElement = (Component, reactRouterProps) => {
 		return <Component {...props} {...reactRouterProps} />;
 	};
 	return React.cloneElement(router, { createElement });
 }
-
-/*------------------------------------------------------------------------------------------------*/
-//	--- Exports ---
-/*------------------------------------------------------------------------------------------------*/
- module.exports = addPropsToRouter;

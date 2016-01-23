@@ -1,14 +1,13 @@
-var path = require('path');
-var express = require('express');
-var React = require('react');
-var { Router, Route, IndexRoute, Link } = require('react-router');
-var createBrowserHistory = require('history/lib/createBrowserHistory');
-var { ExpressRoute } = require('express-react-router');
+import path from 'path';
+import express from 'express';
+import React from 'react';
+import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router';
+import { ExpressRoute } from 'express-react-router';
 
 /*------------------------------------------------------------------------------------------------*/
 //	--- React Router Components ---
 /*------------------------------------------------------------------------------------------------*/
-var PageWrapper =	React.createClass({
+const PageWrapper =	React.createClass({
 	render: function() {
 		//ERROR, <Links /> are reloading the entier page (?????????)
 		return (
@@ -33,8 +32,8 @@ var PageWrapper =	React.createClass({
 		);
 	}
 });
-var PageOne =		React.createClass({ render: function() { return <div>PageOne</div>; } });
-var PageTwo =		React.createClass({
+const PageOne =		React.createClass({ render: function() { return <div>PageOne</div>; } });
+const PageTwo =		React.createClass({
 	render: function() {
 		return (
 			<div>
@@ -44,13 +43,13 @@ var PageTwo =		React.createClass({
 		);
 	}
 });
-var SubPageOne = 	React.createClass({ render: function() { return <div>SubPageOne</div>; } });
-var SubPageTwo = 	React.createClass({ render: function() { return <div>SubPageTwo</div>; } });
+const SubPageOne = 	React.createClass({ render: function() { return <div>SubPageOne</div>; } });
+const SubPageTwo = 	React.createClass({ render: function() { return <div>SubPageTwo</div>; } });
 
 /*------------------------------------------------------------------------------------------------*/
 //	--- Routers / Funcs / Files ---
 /*------------------------------------------------------------------------------------------------*/
-var func, router, errFunc, errRouter, appSrc, indenticonSrc, faviconSrc, filesSrc;
+let func, router, errFunc, errRouter, appSrc, indenticonSrc, faviconSrc, filesSrc;
 if(typeof window === 'undefined') {	// Peform only on the server
 	func = function(req, res) {
 		res.send({ test: 'response' });
@@ -73,9 +72,8 @@ if(typeof window === 'undefined') {	// Peform only on the server
 /*------------------------------------------------------------------------------------------------*/
 //	--- Create Route ---
 /*------------------------------------------------------------------------------------------------*/
-var history = typeof window === 'undefined'? null: createBrowserHistory();
-var routes = (
-	<Router history={history} >
+export default (
+	<Router history={browserHistory} >
 		<Route			path="/"			component={PageWrapper}>
 			<IndexRoute							component={PageOne} />
 			<Route 			path="pageTwo"		component={PageTwo}>
@@ -93,8 +91,3 @@ var routes = (
 		</Route>
 	</Router>
 );
-
-/*------------------------------------------------------------------------------------------------*/
-//	--- Exports ---
-/*------------------------------------------------------------------------------------------------*/
-module.exports = routes;
