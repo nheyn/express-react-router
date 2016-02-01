@@ -31,4 +31,4 @@ RUN (cd ~/express-react-router && npm install)
 RUN npm install
 CMD npm run start
 
-EXPOSE 80
+EXPOSE 8080

@@ -63,5 +63,5 @@ app.use((req, res, next) => {
 app.use(reactRouter);
 
 // Start Server
-app.listen(80);
-console.log('listening on port 80');
+app.listen(8080);
+console.log('listening on port 8080');
