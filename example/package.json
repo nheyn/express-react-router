@@ -14,9 +14,7 @@
 		"babel-preset-stage-0": "6",
 		"babel-preset-react": "6",
 		"browserify": "13",
-		"express-react-router": "file:/var/express-react-router/"
-	},
-	"devDependencies": {
+		"express-react-router": "file:../express-react-router/"
 	},
 	"scripts": {
 		"build:babel": "babel ./src -d ./lib",

@@ -4,24 +4,31 @@ FROM node:5
 RUN apt-get update
 RUN apt-get install -y libelf1
 
-# Get express-react-router (use -v tag in 'docker run' for development)
-WORKDIR /var/
+# Create node user
+RUN groupadd node
+RUN useradd -m -g node node
+
+# Get express-react-router
+WORKDIR /home/node/
 RUN git clone https://github.com/nheyn/express-react-router.git
+RUN chown node:node ./express-react-router
+RUN chown -R node:node ./express-react-router/*
 
-WORKDIR /var/express-react-router/
+# Get example site source
+WORKDIR /home/node/express-react-router-example
+RUN chown node:node .
+
+COPY .babelrc ./.babelrc
+COPY browserify.js ./browserify.js
+COPY package.json ./package.json
+COPY src/ ./src/
+COPY public/ ./public/
+RUN chown -R node:node ./*
+
+# Start Server
+USER node
+RUN (cd ~/express-react-router && npm install)
 RUN npm install
-
-# Create example server
-WORKDIR /var/www/
-
-COPY .babelrc /var/www/.babelrc
-COPY browserify.js /var/www/browserify.js
-COPY package.json /var/www/package.json
-COPY src/ /var/www/src/
-COPY public/ /var/www/public/
-
-RUN npm install --unsafe-perm
-
 CMD npm run start
 
 EXPOSE 80
