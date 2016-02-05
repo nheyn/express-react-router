@@ -11,9 +11,10 @@ import React from 'react';
  *
  * @return			{ReactRouter}	The router that will add props to the rendered coponet
  */
-export default function addPropsToRouter(router, props) {
+export default function addPropsToRouter(router: ReactRouterRoute, props: Object): ReactRouterRoute {
 	const createElement = (Component, reactRouterProps) => {
 		return <Component {...props} {...reactRouterProps} />;
 	};
+
 	return React.cloneElement(router, { createElement });
 }

@@ -1,6 +1,6 @@
 declare module "react-router" {
 	declare var Route: ReactClass;
-	declare var RoutingContext: ReactClass;
+	declare var RouterContext: ReactClass;
 	declare var match: (settings: MatchFuncSettings, callback: MatchFuncCallback) => void;
 }
 
