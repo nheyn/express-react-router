@@ -1,6 +1,6 @@
 {
 	"name": "express-react-router",
-	"version": "2.0.0-rc1",
+	"version": "2.0.0-rc2",
 	"description": "Express middleware for react-router",
 	"author": "Nick Heyn <nick@heyn.io>",
 	"main": "./lib/index.js",
