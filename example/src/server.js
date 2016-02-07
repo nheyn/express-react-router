@@ -50,6 +50,10 @@ function errorHandler(err, req, res) {
 // Create Server
 const reactRouter = createExpressRouter({
 	routes: routes,
+	props: { title: 'Express React Router Example Site' },
+	getProps(req) {
+		return { url: req.url };
+	},
 	initialLoadHandler: initialLoadHandler,
 	errorHandler: errorHandler
 });

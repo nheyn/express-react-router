@@ -11,5 +11,9 @@ window.React = React;
 // Render react-router to page
 render({
 	routes: routes,
+	props: { title: 'Express React Router Example Site' },
+	getProps(): Object {
+		return { url: window.location.pathname };
+	},
 	container: window.document.getElementById('reactContent')
 });
