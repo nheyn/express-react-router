@@ -11,9 +11,10 @@ import addPropsToRouter from './addPropsToRouter';
 
 type ServerSettings = {
 	routes: ReactRouterRoute,
-	props: ?({[key: string]: any} | (req: ExpressReq) => {[key: string]: any}),
+	props?: {[key: string]: any},
+	getProps?: (req: ExpressReq) => {[key: string]: any},
 	initialLoadHandler: (reactStr: string, req: ExpressReq, res: ExpressRes) => void,
-	errorHandler: ?(err: Error, req: ExpressReq, res: ExpressRes) => void,
+	errorHandler?: (err: Error, req: ExpressReq, res: ExpressRes) => void,
 };
 
 /**
@@ -22,18 +23,20 @@ type ServerSettings = {
  * @param settings			{object}
  *			routes				{ReactRouterRoute}		The router to render
  *			[props]				{Object}				Props to add to the top-level handler
+ *			[getProps]			{ExpressReq => Object}	A function the gets props to add to the top-level handler, for
+ *														the given request
  *			initialLoadHandler	{						A functions that should send the response
  *														to an initial page load request
- *	 								(	string,				The rended html for the current route
+ *	 								(	string,				The rendered html for the current route
  *										ExpressReq,			The express request
- *										ExpressRes			The erpress resonse
+ *										ExpressRes			The express response
  *									) => void
  *								}
  *			[errorHandler]		{						A functions that should send the response
  *														for any error on the server
  *									(	Error,				The error to handle
  *										ExpressReq,			The express request
- *										ExpressRes			The erpress resonse
+ *										ExpressRes			The express response
  *									) => void
  *								}
  *
@@ -75,12 +78,11 @@ export default function createExpressRouter(settings: ServerSettings): ExpressRo
 				let routerContextElement = <RouterContext {...renderProps} />;
 
 				// Add props
-				if(settings.props) {
-					const props = typeof settings.props === 'function'?
-									settings.props(req):
-									settings.props;
+				if(settings.props || settings.getProps) {
+					const staticProps = settings.props? settings.props: {}
+					const propsForReq = settings.getProps? settings.getProps(req): {};
 
-					routerContextElement = addPropsToRouter(routerContextElement, props);
+					routerContextElement = addPropsToRouter(routerContextElement, { ...staticProps, ...propsForReq });
 				}
 
 				// Render react-router handler
