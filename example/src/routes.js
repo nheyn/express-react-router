@@ -12,6 +12,7 @@ const PageWrapper =	React.createClass({
 		//ERROR, <Links /> are reloading the entier page (?????????)
 		return (
 			<div>
+				<h4>{this.props.title} - {this.props.url}</h4>
 				<ul>
 					<li><Link to="/">Page One</Link></li>
 					<li>
