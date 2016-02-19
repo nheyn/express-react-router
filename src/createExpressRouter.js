@@ -9,12 +9,7 @@ import { match, RouterContext } from 'react-router';
 import RouteParser from './RouteParser';
 import addPropsToRouter from './addPropsToRouter';
 
-type ServerSettings = {
-	routes: ReactRouterRoute,
-	PageComponent: ReactClass,
-	props?: {[key: string]: any},
-	getProps?: (req: ExpressReq) => {[key: string]: any},
-};
+type PropArg = Object | (req: ExpressReq) => Object;
 
 /**
  * Create an express router for the given react-router routes.
@@ -33,23 +28,35 @@ type ServerSettings = {
  * @return					{ExpressRouter}				The express router to add to the express
  *														application
  */
-export default function createExpressRouter(settings: ServerSettings): ExpressRouter {
-	// Get route
-	if(!settings.routes) throw new Error('Route is required for the server');
-	const routerParser = new RouteParser(settings.routes);
-	const routes = routerParser.getReactRouterRoute();
+export default function createExpressRouter(
+	routes: ReactRouterRoute,
+	PageComponent: ReactClass,
+	...propArgs: Array<PropArg>
+): ExpressRouter {
+	// Check args route
+	if(!routes) throw new Error('Route is required for the server');
+	if(!PageComponent) throw new Error('PageComponent is required for the server');
+
+	// Parse Routes
+	const routerParser = new RouteParser(routes);
+	const reactRouterRoutes = routerParser.getReactRouterRoute();
 	const expressRouterFromRoute = routerParser.getExpressRouter();
 
-	// Get PageComponent
-	const { PageComponent } = settings;
-	if(!PageComponent) throw new Error('PageComponent is required for the server');
+	// Combine props
+	const getAllProps = (req) => {
+		let currProps = {};
+		propArgs.forEach((nextProps) => {
+			const newProps = nextProps === 'function'? nextProps(req): nextProps;
+			currProps = { ...currProps, ...newProps };
+		});
+		return currProps;
+	};
 
 	// Create express router
 	let router = express.Router();
 	router.use((req, res, next) => {
 		// Render current route
-		const location = req.url;
-		match({ routes, location }, (err, redirectLocation, renderProps) => {
+		match({ routes: reactRouterRoutes, location: req.url }, (err, redirectLocation, renderProps) => {
 			if(err) {
 				// Handle errors in route
 				next(err);
@@ -62,12 +69,7 @@ export default function createExpressRouter(settings: ServerSettings): ExpressRo
 				let routerContextElement = <RouterContext {...renderProps} />;
 
 				// Add props
-				if(settings.props || settings.getProps) {
-					const staticProps = settings.props? settings.props: {}
-					const propsForReq = settings.getProps? settings.getProps(req): {};
-
-					routerContextElement = addPropsToRouter(routerContextElement, { ...staticProps, ...propsForReq });
-				}
+				if(propArgs.length) routerContextElement = addPropsToRouter(routerContextElement, getAllProps());
 
 				// Render react-router handler
 				const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);

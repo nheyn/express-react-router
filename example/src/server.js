@@ -6,6 +6,9 @@ import { createExpressRouter } from 'express-react-router';
 import routes from './routes';
 
 const Page = React.createClass({
+	getUrl() {
+		return this.props.req.url;
+	},
 	getInnerHTML() {
 		return { __html: this.props.reactHtml };
 	},
@@ -13,7 +16,7 @@ const Page = React.createClass({
 		return (
 			<html>
 				<head>
-					<title>Example Page</title>
+					<title>Example Page - {}</title>
 				</head>
 				<body>
 					<div id="reactContent" dangerouslySetInnerHTML={this.getInnerHTML()} />
@@ -47,22 +50,15 @@ const ErrorPage = React.createClass({
 });
 
 // Create Server
-const reactRouter = createExpressRouter({
-	routes: routes,
-	PageComponent: Page,
-	props: { title: 'Express React Router Example Site' },
-	getProps(req) {
-		return { url: req.url };
-	}
-});
-
 let app = express();
 app.use((req, res, next) => {
 	const { url, method, params, query } = req;
 	console.log(`[${url}]: `, { method, params, query });
 	next();
 });
-app.use(reactRouter);
+app.use(createExpressRouter(routes, Page, { title: 'Express React Router Example Site' }, (req) => {
+	return { url: req.url };
+}));
 app.use((err, req, res, next) => {
 	// Send to Client
 	res.status(500).send(
