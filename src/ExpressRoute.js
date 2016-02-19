@@ -4,9 +4,6 @@
 import React from 'react';
 import express from 'express';
 
-/*------------------------------------------------------------------------------------------------*/
-//	--- Express Route Handler Definitions ---
-/*------------------------------------------------------------------------------------------------*/
 /**
  * A React class, that can be use instead of React Router's Route class, that can
  */

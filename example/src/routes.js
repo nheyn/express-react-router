@@ -4,12 +4,11 @@ import React from 'react';
 import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router';
 import { ExpressRoute } from 'express-react-router';
 
-/*------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 //	--- React Router Components ---
-/*------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 const PageWrapper =	React.createClass({
 	render: function() {
-		//ERROR, <Links /> are reloading the entier page (?????????)
 		return (
 			<div>
 				<h4>{this.props.title} - {this.props.url}</h4>
@@ -47,9 +46,9 @@ const PageTwo =		React.createClass({
 const SubPageOne = 	React.createClass({ render: function() { return <div>SubPageOne</div>; } });
 const SubPageTwo = 	React.createClass({ render: function() { return <div>SubPageTwo</div>; } });
 
-/*------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 //	--- Routers / Funcs / Files ---
-/*------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 let func, router, errFunc, errRouter, appSrc, indenticonSrc, faviconSrc, filesSrc;
 if(typeof window === 'undefined') {	// Peform only on the server
 	func = function(req, res) {
@@ -70,9 +69,9 @@ if(typeof window === 'undefined') {	// Peform only on the server
 	filesSrc =		path.join(__dirname, '../public/');
 }
 
-/*------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 //	--- Create Route ---
-/*------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 export default (
 	<Router history={browserHistory} >
 		<Route			path="/"			component={PageWrapper}>

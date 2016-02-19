@@ -7,9 +7,6 @@ import React from 'react';
 
 type RouteFilter = (route: ReactRouterRoute) => bool;
 
-/*------------------------------------------------------------------------------------------------*/
-//	--- RouteParser ---
-/*------------------------------------------------------------------------------------------------*/
 /**
  * A class that parse the react router routes, that also contains express http handlers.
  */
@@ -27,9 +24,6 @@ export default class RouteParser {
 		this._route = route;
 	}
 
-/*------------------------------------------------------------------------------------------------*/
-//	Public Methods
-/*------------------------------------------------------------------------------------------------*/
 	/**
 	 * Gets the react router route without any of the http handler routes.
 	 *
@@ -56,9 +50,6 @@ export default class RouteParser {
 		return router;
 	}
 
-/*------------------------------------------------------------------------------------------------*/
-//	Private Methods
-/*------------------------------------------------------------------------------------------------*/
 	_getExpressRouterRoutes(): Array<ReactRouterRoute> {
 		return this._flattenAndFilteredChildren(hasExpressRouterRecursive).filter(hasExpressRouter);
 	}
@@ -79,9 +70,7 @@ export default class RouteParser {
 	}
 }
 
-/*------------------------------------------------------------------------------------------------*/
-//	--- Helper function ---
-/*------------------------------------------------------------------------------------------------*/
+// Helper Functions
 function hasExpressRouter(route: ReactRouterRoute): bool {
 	return route.type.hasRouter? true: false;
 }
