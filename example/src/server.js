@@ -23,7 +23,24 @@ function initialLoadHandler(reactHtmlString, req, res) {
 	res.send(pageHtml);
 }
 
-function errorHandler(err, req, res) {
+// Create Server
+const reactRouter = createExpressRouter({
+	routes: routes,
+	props: { title: 'Express React Router Example Site' },
+	getProps(req) {
+		return { url: req.url };
+	},
+	initialLoadHandler: initialLoadHandler
+});
+
+let app = express();
+app.use((req, res, next) => {
+	const { url, method, params, query } = req;
+	console.log(`[${url}]: `, { method, params, query });
+	next();
+});
+app.use(reactRouter);
+app.use((err, req, res, next) => {
 	// Create html for error
 	const pageHtml =
 `
@@ -45,26 +62,7 @@ function errorHandler(err, req, res) {
 
 	// Send to Client
 	res.status(500).send(pageHtml);
-}
-
-// Create Server
-const reactRouter = createExpressRouter({
-	routes: routes,
-	props: { title: 'Express React Router Example Site' },
-	getProps(req) {
-		return { url: req.url };
-	},
-	initialLoadHandler: initialLoadHandler,
-	errorHandler: errorHandler
 });
-
-let app = express();
-app.use((req, res, next) => {
-	const { url, method, params, query } = req;
-	console.log(`[${url}]: `, { method, params, query });
-	next();
-});
-app.use(reactRouter);
 
 // Start Server
 app.listen(8080);

@@ -13,8 +13,7 @@ type ServerSettings = {
 	routes: ReactRouterRoute,
 	props?: {[key: string]: any},
 	getProps?: (req: ExpressReq) => {[key: string]: any},
-	initialLoadHandler: (reactStr: string, req: ExpressReq, res: ExpressRes) => void,
-	errorHandler?: (err: Error, req: ExpressReq, res: ExpressRes) => void,
+	initialLoadHandler: (reactStr: string, req: ExpressReq, res: ExpressRes) => void
 };
 
 /**
@@ -32,13 +31,6 @@ type ServerSettings = {
  *										ExpressRes			The express response
  *									) => void
  *								}
- *			[errorHandler]		{						A functions that should send the response
- *														for any error on the server
- *									(	Error,				The error to handle
- *										ExpressReq,			The express request
- *										ExpressRes			The express response
- *									) => void
- *								}
  *
  * @return					{ExpressRouter}				The express router to add to the express
  *														application
@@ -50,15 +42,10 @@ export default function createExpressRouter(settings: ServerSettings): ExpressRo
 	const routes = routerParser.getReactRouterRoute();
 	const expressRouterFromRoute = routerParser.getExpressRouter();
 
-	// Get request handlers
+	// Get initial load handler
 	const initialLoadHandler = settings.initialLoadHandler;
-	if(!initialLoadHandler) throw new Error('The initialLoadHandler is required for the server');
-
-	const errorHandler = settings.errorHandler? settings.errorHandler: defaultErrorHandler;
-
-	if(typeof initialLoadHandler !== 'function' || typeof errorHandler !== 'function') {
-		throw new Error('The initialLoadHandler / errorHandler must be a function');
-	}
+	if(!initialLoadHandler)	throw new Error('The initialLoadHandler is required for the server');
+	if(typeof initialLoadHandler !== 'function') throw new Error('The initialLoadHandler must be a function');
 
 	// Create express router
 	let router = express.Router();
@@ -104,16 +91,6 @@ export default function createExpressRouter(settings: ServerSettings): ExpressRo
 			errorMessage: `Page Not Found: ${req.url}`
 		});
 	});
-	router.use((err, req, res, next) => {
-		errorHandler(err, req, res);
-	});
 
 	return router;
-}
-
-/*------------------------------------------------------------------------------------------------*/
-//	--- Helper functions ---
-/*------------------------------------------------------------------------------------------------*/
-function defaultErrorHandler(err: Error, req: ExpressReq, res: ExpressRes) {
-	 res.status(500).send({ errorName: err.name, errorMessage: err.message });
 }
