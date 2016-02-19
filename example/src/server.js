@@ -1,36 +1,59 @@
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 import express from 'express';
 import { createExpressRouter } from 'express-react-router';
 
 import routes from './routes';
 
-// Request handlers
-function initialLoadHandler(reactHtmlString, req, res) {
-	// Create html for the full page
-	const pageHtml =
-`
-<html>
-	<head>
-		<title>Example Page</title>
-	</head>
-	<body>
-		<div id="reactContent">${reactHtmlString}</div>
-		<script src="/app.js"></script>
-	</body>
-</html>
-`;
+const Page = React.createClass({
+	getInnerHTML() {
+		return { __html: this.props.reactHtml };
+	},
+	render() {
+		return (
+			<html>
+				<head>
+					<title>Example Page</title>
+				</head>
+				<body>
+					<div id="reactContent" dangerouslySetInnerHTML={this.getInnerHTML()} />
+					<script src="/app.js"></script>
+				</body>
+			</html>
+		);
+	}
+});
 
-	// Send to Client
-	res.send(pageHtml);
-}
+const ErrorPage = React.createClass({
+	render() {
+		const { err } = this.props;
+		return (
+			<html>
+				<head>
+					<title>Example Error Page</title>
+				</head>
+				<body>
+					<div id="error">
+						<h1>Error</h1>
+						<h3>{err.name}</h3>
+						<p>
+							{err.message}
+						</p>
+					</div>
+				</body>
+			</html>
+		);
+	}
+});
 
 // Create Server
 const reactRouter = createExpressRouter({
 	routes: routes,
+	PageComponent: Page,
 	props: { title: 'Express React Router Example Site' },
 	getProps(req) {
 		return { url: req.url };
-	},
-	initialLoadHandler: initialLoadHandler
+	}
 });
 
 let app = express();
@@ -41,27 +64,11 @@ app.use((req, res, next) => {
 });
 app.use(reactRouter);
 app.use((err, req, res, next) => {
-	// Create html for error
-	const pageHtml =
-`
-<html>
-	<head>
-		<title>Example Error Page</title>
-	</head>
-	<body>
-		<div id="error"
-			<h1>Error<h1>
-			<h3>${err.name}</h3>
-			<p>
-				${err.message}
-			</p>
-		</div>
-	</body>
-</html>
-`;
-
 	// Send to Client
-	res.status(500).send(pageHtml);
+	res.status(500).send(
+		'<!DOCTYPE html>' +
+		ReactDOMServer.renderToStaticMarkup(<ErrorPage err={err} />)
+	);
 });
 
 // Start Server

@@ -11,9 +11,9 @@ import addPropsToRouter from './addPropsToRouter';
 
 type ServerSettings = {
 	routes: ReactRouterRoute,
+	PageComponent: ReactClass,
 	props?: {[key: string]: any},
 	getProps?: (req: ExpressReq) => {[key: string]: any},
-	initialLoadHandler: (reactStr: string, req: ExpressReq, res: ExpressRes) => void
 };
 
 /**
@@ -21,16 +21,14 @@ type ServerSettings = {
  *
  * @param settings			{object}
  *			routes				{ReactRouterRoute}		The router to render
+ *			PageComponent		{ReactClass}			A class that takes the render html string, reactHtml, and a
+ *														express request, req, as a prop and returns markup for the
+ *														entire page.
+ *														NOTE: This is render using 'renderToStaticMarkdown(...)' with
+ *														'' placed before it.
  *			[props]				{Object}				Props to add to the top-level handler
  *			[getProps]			{ExpressReq => Object}	A function the gets props to add to the top-level handler, for
  *														the given request
- *			initialLoadHandler	{						A functions that should send the response
- *														to an initial page load request
- *	 								(	string,				The rendered html for the current route
- *										ExpressReq,			The express request
- *										ExpressRes			The express response
- *									) => void
- *								}
  *
  * @return					{ExpressRouter}				The express router to add to the express
  *														application
@@ -42,10 +40,9 @@ export default function createExpressRouter(settings: ServerSettings): ExpressRo
 	const routes = routerParser.getReactRouterRoute();
 	const expressRouterFromRoute = routerParser.getExpressRouter();
 
-	// Get initial load handler
-	const initialLoadHandler = settings.initialLoadHandler;
-	if(!initialLoadHandler)	throw new Error('The initialLoadHandler is required for the server');
-	if(typeof initialLoadHandler !== 'function') throw new Error('The initialLoadHandler must be a function');
+	// Get PageComponent
+	const { PageComponent } = settings;
+	if(!PageComponent) throw new Error('PageComponent is required for the server');
 
 	// Create express router
 	let router = express.Router();
@@ -75,8 +72,11 @@ export default function createExpressRouter(settings: ServerSettings): ExpressRo
 				// Render react-router handler
 				const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);
 
-				// Send to client
-				initialLoadHandler(renderedReactHtml, req, res);
+				// Send entire page to client
+				res.send(
+					'<!DOCTYPE html>' +
+					ReactDOMServer.renderToStaticMarkup(<PageComponent req={req} reactHtml={renderedReactHtml} />)
+				);
 			}
 			else {
 				next();
