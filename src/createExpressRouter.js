@@ -45,7 +45,9 @@ export default function createExpressRouter(
 	// Combine props
 	const getAllProps = (req) => {
 		let currProps = {};
+		// $FlowIssue - Not able to figure out forEach / union types
 		propArgs.forEach((nextProps) => {
+			// $FlowIssue - Not able to figure out ternary operator / union types
 			const newProps = nextProps === 'function'? nextProps(req): nextProps;
 			currProps = { ...currProps, ...newProps };
 		});
