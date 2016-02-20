@@ -28,7 +28,7 @@ type PropArg = Object | (req: ExpressReq) => Object;
  * @return					{ExpressRouter}				The express router to add to the express
  *														application
  */
-export default function createExpressRouter(
+export default function handleReactRouter(
 	routes: ReactRouterRoute,
 	PageComponent: ReactClass,
 	...propArgs: Array<PropArg>

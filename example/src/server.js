@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
-import { createExpressRouter } from 'express-react-router';
+import { handleReactRouter } from 'express-react-router';
 
 import routes from './routes';
 
@@ -16,7 +16,7 @@ const Page = React.createClass({
 		return (
 			<html>
 				<head>
-					<title>Example Page - {}</title>
+					<title>Example Page - {this.getUrl()}</title>
 				</head>
 				<body>
 					<div id="reactContent" dangerouslySetInnerHTML={this.getInnerHTML()} />
@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 	console.log(`[${url}]: `, { method, params, query });
 	next();
 });
-app.use(createExpressRouter(routes, Page, { title: 'Express React Router Example Site' }, (req) => {
+app.use(handleReactRouter(routes, Page, { title: 'Express React Router Example Site' }, (req) => {
 	return { url: req.url };
 }));
 app.use((err, req, res, next) => {
