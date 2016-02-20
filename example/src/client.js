@@ -9,11 +9,15 @@ import routes from './routes';
 window.React = React;
 
 // Render react-router to page
-render({
-	routes: routes,
-	props: { title: 'Express React Router Example Site' },
-	getProps(): Object {
-		return { url: window.location.pathname };
+render(
+	routes,
+	window.document.getElementById('reactContent'),
+	{
+		title: 'Express React Router Example Site'
 	},
-	container: window.document.getElementById('reactContent')
-});
+	() => {
+		return {
+			url: window.location.pathname
+		};
+	}
+);
