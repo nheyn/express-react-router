@@ -7,8 +7,6 @@ import ReactDOM from 'react-dom';
 import RouteParser from './RouteParser';
 import addPropsToRouter from './addPropsToRouter';
 
-type PropArgs = Object | () => Object;
-
 /**
  * Render the given routes to the given container.
  *
@@ -23,7 +21,7 @@ type PropArgs = Object | () => Object;
 export default function render(
 	routes: ReactRouterRoute,
 	container: any, 				//NOTE, 'any' is in lib/react.js but is really a DOMElement
-	...propArgs: Array<PropArgs>
+	...propArgs: Array<Object | () => Object>
 ): ReactComponent {
 	// Check args
 	if(!routes) throw new Error('Route is required to render');
@@ -38,26 +36,47 @@ export default function render(
 		return ReactDOM.render(parsedRoutes, container);
 	}
 	else {
-		return renderWithProps(parsedRoutes, container, () => {
-			let props = {};
-			propArgs.forEach((propArg) => {
-				const newProps = typeof propArg === 'function'? propArg(): propArg;
+		// Split up static and dynamic props
+		let staticProps = {};
+		const dynamicPropFuncs: Array<() => Object> = propArgs.filter((propArg) => {
+			if(typeof propArg === 'function') return true;
 
-				props = { ...props, ...newProps };
-			});
-			return props;
+			staticProps = { ...staticProps, ...propArg };
+			return false;
 		});
+
+		if(dynamicPropFuncs.length === 0) {
+			const routesWithProps = addPropsToRouter(routes, staticProps);
+
+			return ReactDOM.render(routesWithProps, container);
+		}
+		else {
+			return renderWithProps(parsedRoutes, container, staticProps, () => {
+				let props = {};
+				dynamicPropFuncs.forEach((getProps) => {
+					props = { ...props, ...getProps() };
+				});
+				return props;
+			});
+		}
 	}
 }
 
-function renderWithProps(routes: ReactRouterRoute, container: any, getProps: () => Object): ReactComponent {
-	const props = getProps();
-	const routesWithProps = addPropsToRouter(routes, null, getProps);
+function renderWithProps(
+	routes: ReactRouterRoute,
+	container: any,
+	staticProps: Object,
+	getDynamicProps: () => Object
+): ReactComponent {
+	// Add props to the router
+	const routesWithProps = addPropsToRouter(routes, staticProps, getDynamicProps);
 
+	// Recall this function if callback is called (skip first to avoid infinite loop)
 	let hasRenderedBefore = false;
-	return ReactDOM.render(routesWithProps, container, () => {
-		console.log({ hasRenderedBefore, props: getProps() });
-		if(hasRenderedBefore)	renderWithProps(routes, container, getProps);
+	const renderCallback = () => {
+		if(hasRenderedBefore)	renderWithProps(routes, container, staticProps, getDynamicProps);
 		else					hasRenderedBefore = true;
-	});
+	};
+
+	return ReactDOM.render(routesWithProps, container, renderCallback);
 }
