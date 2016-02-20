@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 	console.log(`[${url}]: `, { method, params, query });
 	next();
 });
-app.use(handleReactRouter(routes, Page, { title: 'Express React Router Example Site' }, (req) => {
+app.use(handleReactRouter(Page, routes, { title: 'Express React Router Example Site' }, (req) => {
 	return { url: req.url };
 }));
 app.use((err, req, res, next) => {
