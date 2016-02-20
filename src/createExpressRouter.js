@@ -45,10 +45,10 @@ export default function createExpressRouter(
 	// Combine props
 	const getAllProps = (req) => {
 		let currProps = {};
-		// $FlowIssue - Not able to figure out forEach / union types
+		console.log({ propArgs });
 		propArgs.forEach((nextProps) => {
-			// $FlowIssue - Not able to figure out ternary operator / union types
-			const newProps = nextProps === 'function'? nextProps(req): nextProps;
+			const newProps = typeof nextProps === 'function'? nextProps(req): nextProps;
+
 			currProps = { ...currProps, ...newProps };
 		});
 		return currProps;
@@ -71,7 +71,7 @@ export default function createExpressRouter(
 				let routerContextElement = <RouterContext {...renderProps} />;
 
 				// Add props
-				if(propArgs.length) routerContextElement = addPropsToRouter(routerContextElement, getAllProps());
+				if(propArgs.length) routerContextElement = addPropsToRouter(routerContextElement, getAllProps(req));
 
 				// Render react-router handler
 				const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);
