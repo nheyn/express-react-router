@@ -20,23 +20,24 @@ var ExpressReactRouter = require('express-react-router');
 var reactRouterMiddleware = ExpressReactRouter.createExpressRouter(
 	PageHandler,	// [Required] 		A component the renders the entire html page
 	routes,			// [Required] 		React Router routes
-	...props		// [Optional/Rest]	An object that contains props to add to the routers Components
+	...props		// [Optional/Rest]	Objects that contain props to add to the routers Components
 );
 ```
-*NOTE:* The final arguments can be a function that returns the props to add.
+*NOTE:* The final arguments can be functions that are passed the current request and returns the props to add.
 
 
 #### On Client
 To render the routes in the browser use 'render':
 ```
 ExpressReactRouter.render({
-	routes: routes,			// [Required] React Router routes
-	container: el,			// [Required] The html element to render the route in
-	callback: function() {	// [Optional] The callback call after rendering
-		// Same as thrid argument to 'ReactDOM.render'
-	}
+	routes			// [Required] 		React Router routes
+	container		// [Required] 		The html element to render the route in
+	...props		// [Optional/Rest]	Objects that contain props to add to the routers Components
 });
 ```
+
+*NOTE:* The final arguments can be functions that returns the props to add. They are called when the component is rendered or updated.
+
 
 ### Documentation
 Basic usage is given above. More detailed documentation is before class/function definitions within the code.
@@ -51,7 +52,6 @@ docker build -d	-p <external port>:8080 express-react-router:example
 ```
 
 ### Plans
-* Update client render(...) function API to match ReactDOM's function API
-* Create boilerplate example, that new project can start from
-* Create flowtype definitions for public API
 * Get documentation from code
+* Create boilerplate example, that new projects can start from
+* Create flowtype definitions for public API
