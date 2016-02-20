@@ -17,17 +17,14 @@ To create an express middleware router for react-router routes use 'createExpres
 ```
 var ExpressReactRouter = require('express-react-router');
 
-var reactRouterMiddleware = ExpressReactRouter.createExpressRouter({
-	routes: routes,		// [Required] React Router routes
-	props: { },			// [Optional] Props to send to the upper level componet in the route
-	initialLoadHandler: function(reactHtmlString, req, res) {				// [Required]
-		// Send the 'reactHtmlString' to the client (using express res)
-	},
-	errorHandler: function(err, req, res) { 							// [Optional]
-		// Handle the given error
-	}
-});
+var reactRouterMiddleware = ExpressReactRouter.createExpressRouter(
+	PageHandler,	// [Required] 		A component the renders the entire html page
+	routes,			// [Required] 		React Router routes
+	...props		// [Optional/Rest]	An object that contains props to add to the routers Components
+);
 ```
+*NOTE:* The final arguments can be a function that returns the props to add.
+
 
 #### On Client
 To render the routes in the browser use 'render':
@@ -49,17 +46,12 @@ A basic site using express-react-router is in the /example/ directory.
 To run using docker, run:
 ```
 cd <path to repo>
-docker build -t express-react-router/example ./example
-docker build															\
-	-d	-p <external port>:80											\
-	-v "$(pwd)"/package.json:/var/express-react-router/package.json		\
-	-v "$(pwd)"/src:/var/express-react-router/src						\
-	express-react-router/example
+docker build -t express-react-router:example .
+docker build -d	-p <external port>:8080 express-react-router:example
 ```
 
 ### Plans
-* Add option client to turn on react's touch events
-* Add option client to show a loading placeholder on slow react-router transitions
-* Create working example, that new project can start from
+* Update client render(...) function API to match ReactDOM's function API
+* Create boilerplate example, that new project can start from
 * Create flowtype definitions for public API
 * Get documentation from code
