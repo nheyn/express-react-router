@@ -42,7 +42,6 @@ export default function handleReactRouter(
 	// Combine props
 	const getAllProps = (req) => {
 		let currProps = {};
-		console.log({ propArgs });
 		propArgs.forEach((nextProps) => {
 			const newProps = typeof nextProps === 'function'? nextProps(req): nextProps;
 
