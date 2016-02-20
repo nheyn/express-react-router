@@ -16,8 +16,9 @@ render(
 		title: 'Express React Router Example Site'
 	},
 	() => {
-		return {
-			url: window.location.pathname
-		};
+		const url = window.location.pathname;
+
+		document.title = `Example Page - ${url}`;
+		return { url };
 	}
 );
