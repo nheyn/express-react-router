@@ -1,4 +1,4 @@
-# Express React router
+# Express React Router
 *Middleware for Express that Serves React Router Websites*
 
 Creates a middleware router for [express.js](http://expressjs.com) that will render a [react-router](https://github.com/rackt/react-router) website on the server.
