@@ -11,6 +11,18 @@ const ExpressRoute = React.createClass({
 	statics: {
 		hasRouter: true,
 		getRouter(props: {[key: string]: any}): ExpressRouter {
+			//NOTE: Remove in feature version
+			if(props.router) {
+				console.warn('<ExpressRouter router={...} /> deprecated, change to <ExpressRouter use={...} />');
+				return props.router;
+			}
+			if(props.callback) {
+				console.warn('<ExpressRouter callback={...} /> deprecated, change to <ExpressRouter use={...} />');
+				return props.callback;
+			}
+			//NOTE: Remove in feature version
+
+
 			if(props.use)				return props.use;
 			else if(props.src)	return express.static(props.src);
 
