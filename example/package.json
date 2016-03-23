@@ -1,6 +1,6 @@
 {
 	"name": "express-react-router-example",
-	"version": "2.0.0-rc1",
+	"version": "2.0.0",
 	"description": "A simple website that uses express-react-router",
 	"author": "Nick Heyn <nick@heyn.io>",
 	"dependencies": {
@@ -11,16 +11,19 @@
 		"babel-polyfill": "6",
 		"babel-cli": "6",
 		"babel-preset-es2015": "6",
-		"babel-preset-stage-0": "6",
 		"babel-preset-react": "6",
 		"browserify": "13",
 		"express-react-router": "file:../../express-react-router/"
 	},
 	"scripts": {
-		"build:babel": "babel ./src -d ./lib",
-		"build:browserify": "node browserify.js",
-		"build": "npm run build:babel && npm run build:browserify",
-		"start": "npm run build && node ./lib/server.js"
+		"babel": "babel ./src -d ./lib",
+    "browserify": "node browserify.js ./lib/client.js ./lib/app.js",
+
+    "build": "npm run babel && npm run browserify",
+    "server": "node ./lib/server.js",
+
+    "postinstall": "npm run build",
+    "start": "npm run server"
 	},
 	"engines": {
 		"node": "v5"
