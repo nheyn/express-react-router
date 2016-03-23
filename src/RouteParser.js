@@ -5,6 +5,8 @@ import path from 'path';
 import express from 'express';
 import React from 'react';
 
+import { hasExpressRouter, getExpressRouterFrom } from './ExpressRoute';
+
 /**
  * A class that parse the react router routes, that also contains express http handlers.
  */
@@ -28,7 +30,7 @@ export default class RouteParser {
 	 * @return	{ReactRouterRoute}	The route with out http handlers
 	 */
 	getReactRouterRoute(): ReactRouterRoute {
-		return filterChildren(this._router, doesntHaveExpressRouter);
+		return filterChildren(this._router, (route) => !hasExpressRouter(route));
 	}
 
 	/**
@@ -39,7 +41,7 @@ export default class RouteParser {
 	getExpressRouter(): ExpressRouter {
 		let router = express.Router();
 		forEachRoute(this._router, (route, path) => {
-			if(hasExpressRouter(route)) router.use(path, getRouterFrom(route));
+			if(hasExpressRouter(route)) router.use(path, getExpressRouterFrom(route));
 		});
 		return router;
 	}
@@ -90,21 +92,4 @@ export function forEachRoute(
 
      forEachRoute(child, mapFn, nextPath);
   });
-}
-
-// Helper Functions
-function hasExpressRouter(route: ReactRouterRoute): bool {
-	return route.type.hasRouter? true: false;
-}
-
-function doesntHaveExpressRouter(route: ReactRouterRoute): bool {
-	return !hasExpressRouter(route);
-}
-
-function getRouterFrom(route: ReactRouterRoute): ExpressRouter {
-	if(doesntHaveExpressRouter(route)) {
-		throw new Error("Routes passed to 'getRouterFrom' must have 'getRouter'.");
-	}
-
-	return route.type.getRouter(route.props);
 }
