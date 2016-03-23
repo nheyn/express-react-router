@@ -84,10 +84,10 @@ export default (
 			<ExpressRoute	path="favicon.ico"	src={faviconSrc} />
 			<ExpressRoute	path="app.js"		src={appSrc} />
 			<ExpressRoute	path="files"		src={filesSrc} />
-			<ExpressRoute	path="func"			callback={func} />
-			<ExpressRoute	path="router"		router={router} />
-			<ExpressRoute	path="errorFunc"	callback={errFunc} />
-			<ExpressRoute	path="errorRouter"	router={errRouter} />
+			<ExpressRoute	path="func"			use={func} />
+			<ExpressRoute	path="router"		use={router} />
+			<ExpressRoute	path="errorFunc"	use={errFunc} />
+			<ExpressRoute	path="errorRouter"	use={errRouter} />
 		</Route>
 	</Router>
 );

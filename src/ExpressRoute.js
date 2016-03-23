@@ -11,27 +11,16 @@ const ExpressRoute = React.createClass({
 	statics: {
 		hasRouter: true,
 		getRouter(props: {[key: string]: any}): ExpressRouter {
-			if(props.router)		return props.router;
-			else if(props.callback)	return this.getRouterFromCallback(props.callback);
-			else if(props.src)		return this.getRouterFromSrc(props.src);
+			if(props.use)				return props.use;
+			else if(props.src)	return express.static(props.src);
 
-			throw new Error("RouterRoute must have 'callback', 'router' or 'src' prop.");
-		},
-		getRouterFromCallback(callback: ExpressCallback): ExpressRouter {
-			let router = express.Router();
-			router.use(callback);
-			return router;
-		},
-		getRouterFromSrc(src: string): ExpressRouter {
-			return express.static(src);
+			throw new Error("RouterRoute must have 'use' or 'src' prop.");
 		}
 	},
 	propTypes: {
-		name: React.PropTypes.string,
 		path: React.PropTypes.string,
 		src: React.PropTypes.string,
-		callback: React.PropTypes.func,
-		router: React.PropTypes.any // Because ExpressRouter is a func with props
+		use: React.PropTypes.any,
 	},
 	render(): ReactElement {
 		throw new Error('RouterRoute should never be rendered');
