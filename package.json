@@ -1,6 +1,6 @@
 {
 	"name": "express-react-router",
-	"version": "2.1.1",
+	"version": "2.1.1-dev",
 	"description": "Express middleware for react-router",
 	"author": "Nick Heyn <nick@heyn.io>",
 	"main": "./lib/index.js",
@@ -22,12 +22,10 @@
 		"flow-bin": "~0.20.0"
 	},
 	"scripts": {
-		"flow": "./node_modules/.bin/flow",
-		"flow:stop": "./node_modules/.bin/flow stop",
-		"check": "npm run flow",
-		"build": "npm run check && babel ./src/ -d ./lib/",
-		"prepublish": "npm run build",
-		"clean": "rm -rf ./lib/ && npm flow:stop"
+		"flow": "flow check",
+		"babel": "babel ./src/ -d ./lib/",
+
+		"prepublish": "npm run flow && npm run babel"
 	},
 	"engines": {
 		"node": "v5"
