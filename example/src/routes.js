@@ -63,7 +63,7 @@ if(typeof window === 'undefined') {	// Peform only on the server
 	errRouter = express.Router();
 	errRouter.use(errFunc);
 
-	appSrc =		path.join(__dirname, '../app.js');
+	appSrc =		path.join(__dirname, './app.js');
 	indenticonSrc =	path.join(__dirname, '../public/identicon.png');
 	faviconSrc =	path.join(__dirname, '../public/favicon.ico');
 	filesSrc =		path.join(__dirname, '../public/');
