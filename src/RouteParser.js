@@ -5,13 +5,11 @@ import path from 'path';
 import express from 'express';
 import React from 'react';
 
-type RouteFilter = (route: ReactRouterRoute) => bool;
-
 /**
  * A class that parse the react router routes, that also contains express http handlers.
  */
 export default class RouteParser {
-	_route: ReactRouterRoute;
+	_router: ReactRouterRoute;
 
 	/**
 	 * A constructor that takes the route that is being parsed.
@@ -21,7 +19,7 @@ export default class RouteParser {
 	 *									not have React sub-routes
 	 */
 	constructor(route: ReactRouterRoute) {
-		this._route = route;
+		this._router = route;
 	}
 
 	/**
@@ -30,11 +28,7 @@ export default class RouteParser {
 	 * @return	{ReactRouterRoute}	The route with out http handlers
 	 */
 	getReactRouterRoute(): ReactRouterRoute {
-		return React.cloneElement(
-			this._route,
-			{},
-			this._getReactRouterRoutesChildren()
-		);
+		return filterChildren(this._router, doesntHaveExpressRouter);
 	}
 
 	/**
@@ -44,30 +38,58 @@ export default class RouteParser {
 	 */
 	getExpressRouter(): ExpressRouter {
 		let router = express.Router();
-		this._getExpressRouterRoutes().forEach((route) => {
-			router.use(getPathOf(route), getRouterFrom(route));
+		forEachRoute(this._router, (route, path) => {
+			if(hasExpressRouter(route)) router.use(path, getRouterFrom(route));
 		});
 		return router;
 	}
+}
 
-	_getExpressRouterRoutes(): Array<ReactRouterRoute> {
-		return this._flattenAndFilteredChildren(hasExpressRouterRecursive).filter(hasExpressRouter);
-	}
+/**
+ * Get the given route with its children filtered using the given function.
+ *
+ * NOTE: Does not call render for each element, only get children from el.props.children
+ * NOTE: The given route is not sent to the checkFn
+ *
+ * @param route   The react-router <Route /> to filter the children of
+ * @param checkFn The function to check weather or not to keep the child
+ *
+ * @return        The react-router <Route /> without the filtered out children
+ */
+export function filterChildren(route: ReactRouterRoute, checkFn: (route: ReactRouterRoute) => bool): ReactRouterRoute {
+  const { children } = route.props;
+  if(!children) return route;
 
-	_getReactRouterRoutesChildren(): Array<ReactRouterRoute> {
-		return this._filterRoutesChildren(doesntHaveExpressRouter);
-	}
+  return React.cloneElement(
+  	route,
+  	{},
+  	React.Children.toArray(children)
+  		.filter(checkFn)
+  		.map((child) => filterChildren(child, checkFn))
+  );
+}
 
-	_filterRoutesChildren(shouldKeep: RouteFilter): Array<ReactRouterRoute> {
-		return filterChildren(this._route.props.children, shouldKeep);
-	}
+/**
+ * Call the given callback for each element in the given react-router <Route />.
+ *
+ * NOTE: Does not call render for each element, only get children from el.props.children
+ *
+ * @param route     	The react-router <Route /> to traverse
+ * @param mapFn     	The function to call with each route, and its current path in the router
+ * @param [currPath]  The path of the given route
+ */
+export function forEachRoute(
+	route: ReactRouterRoute,
+	mapFn: (el: ReactRouterRoute,	path: string) => void,
+	currPath: string = ''
+) {
+  mapFn(route, currPath);
 
-	_flattenAndFilteredChildren(shouldKeep: RouteFilter) : Array<ReactRouterRoute> {
-		return flattenRoutes(
-			getPathOf(this._route),
-			this._filterRoutesChildren(shouldKeep)
-		);
-	}
+  React.Children.forEach(route.props.children, (child) => {
+     const nextPath = child.props.path? path.join(currPath, child.props.path): currPath;
+
+     forEachRoute(child, mapFn, nextPath);
+  });
 }
 
 // Helper Functions
@@ -77,71 +99,6 @@ function hasExpressRouter(route: ReactRouterRoute): bool {
 
 function doesntHaveExpressRouter(route: ReactRouterRoute): bool {
 	return !hasExpressRouter(route);
-}
-
-function hasExpressRouterRecursive(route: ReactRouterRoute): bool {
-	if(hasExpressRouter(route)) return true;
-	if(!route.props.children) return false;
-
-	// Check if any child has router
-	const numberOfChildrenWithRouter = filterChildren(
-		route.props.children,
-		hasExpressRouterRecursive
-	).length;
-	return numberOfChildrenWithRouter > 0;
-}
-
-function filterChildren(
-	children: ?(ReactRouterRoute | Array<ReactRouterRoute>),
-	shouldKeep: RouteFilter
-): Array<ReactRouterRoute> {
-	let filteredChildren = [];
-	React.Children.forEach(children, (child, i) => {
-		// Don't include null children
-		if(!child) return;
-
-		// Filter children and their children by should keep
-		if(shouldKeep(child)) {
-			filteredChildren.push(
-				React.cloneElement(
-					child,
-					{key: i},
-					child.props.children?
-						filterChildren(child.props.children, shouldKeep):
-						null
-				)
-			);
-		}
-	});
-	return filteredChildren;
-}
-
-function flattenRoutes(
-	startPath: string,
-	routes: Array<ReactRouterRoute>
-): Array<ReactRouterRoute> {
-	if(routes.length === 0) return [];
-
-	let flattenedRoutes = [];
-	const flattener = (currRoutes, prefix) => {
-		//NOTE, Not using React.Children.map because github.com/facebook/react/issues/2872
-		React.Children.forEach(currRoutes, (route) => {
-			const currPath = getPathOf(route, prefix);
-
-			flattenedRoutes.push(React.cloneElement(route, { path: currPath }));
-			if(route.props.children) flattener(route.props.children, currPath);
-		});
-	};
-	flattener(routes, startPath);
-
-	return flattenedRoutes;
-}
-
-function getPathOf(route: ReactRouterRoute, prefix?: string): string {
-	return path.join(
-		prefix? prefix: '/',
-		route.props.path? route.props.path: (route.props.name? route.props.name: '')
-	);
 }
 
 function getRouterFrom(route: ReactRouterRoute): ExpressRouter {
