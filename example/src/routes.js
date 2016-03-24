@@ -46,11 +46,14 @@ const PageTwo =		React.createClass({
 const SubPageOne = 	React.createClass({ render: function() { return <div>SubPageOne</div>; } });
 const SubPageTwo = 	React.createClass({ render: function() { return <div>SubPageTwo</div>; } });
 
+const NotFound = React.createClass({ render: function() { return <div>404</div>; } });
+const NotFoundPageTwo = React.createClass({ render: function() { return <div>Page Two 404</div>; } });
+
 /*--------------------------------------------------------------------------------------------------------------------*/
 //	--- Routers / Funcs / Files ---
 /*--------------------------------------------------------------------------------------------------------------------*/
 let func, router, errFunc, errRouter, appSrc, indenticonSrc, faviconSrc, filesSrc;
-if(typeof window === 'undefined') {	// Peform only on the server
+if(typeof window === 'undefined') {	// Preform only on the server
 	func = function(req, res) {
 		res.send({ test: 'response' });
 	};
@@ -63,7 +66,7 @@ if(typeof window === 'undefined') {	// Peform only on the server
 	errRouter = express.Router();
 	errRouter.use(errFunc);
 
-	appSrc =		path.join(__dirname, '../app.js');
+	appSrc =		path.join(__dirname, './app.js');
 	indenticonSrc =	path.join(__dirname, '../public/identicon.png');
 	faviconSrc =	path.join(__dirname, '../public/favicon.ico');
 	filesSrc =		path.join(__dirname, '../public/');
@@ -74,20 +77,22 @@ if(typeof window === 'undefined') {	// Peform only on the server
 /*--------------------------------------------------------------------------------------------------------------------*/
 export default (
 	<Router history={browserHistory} >
-		<Route			path="/"			component={PageWrapper}>
-			<IndexRoute							component={PageOne} />
-			<Route 			path="pageTwo"		component={PageTwo}>
-				<Route 			path="subPageOne"		component={SubPageOne} />
-				<Route 			path="subPageTwo"		component={SubPageTwo} />
+		<Route					path="/"						component={PageWrapper}>
+			<IndexRoute													component={PageOne} />
+			<Route 			path="pageTwo"					component={PageTwo}>
+				<Route 				path="subPageOne"			component={SubPageOne} />
+				<Route 				path="subPageTwo"			component={SubPageTwo} />
+				<Route				path="*"							component={NotFoundPageTwo} />
 				<ExpressRoute	path="identicon.png"	src={indenticonSrc} />
 			</Route>
+			<Route 				path="*"						component={NotFound} />
 			<ExpressRoute	path="favicon.ico"	src={faviconSrc} />
-			<ExpressRoute	path="app.js"		src={appSrc} />
-			<ExpressRoute	path="files"		src={filesSrc} />
-			<ExpressRoute	path="func"			callback={func} />
-			<ExpressRoute	path="router"		router={router} />
-			<ExpressRoute	path="errorFunc"	callback={errFunc} />
-			<ExpressRoute	path="errorRouter"	router={errRouter} />
+			<ExpressRoute	path="app.js"				src={appSrc} />
+			<ExpressRoute	path="files"				src={filesSrc} />
+			<ExpressRoute	path="func"					use={func} />
+			<ExpressRoute	path="router"				use={router} />
+			<ExpressRoute	path="errorFunc"		use={errFunc} />
+			<ExpressRoute	path="errorRouter"	use={errRouter} />
 		</Route>
 	</Router>
 );

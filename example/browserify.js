@@ -11,14 +11,19 @@ var ignore = [
 ];
 
 // Browserify client side app
-var b = browserify('./lib/client.js');
+var inFile = process.argv[2];
+var b = browserify(inFile);
 ignore.forEach(function(module) {
-	b.ignore(module);
+  b.ignore(module);
 });
 
 // Write file
-var appJsWriteStream = fs.createWriteStream('app.js', { flags : 'w' });
+var outFile = process.argv[3];
+var appJsWriteStream = fs.createWriteStream(outFile, { flags : 'w' });
 var appJsBundle = b.bundle();
+appJsBundle.on('end', function() {
+  console.log(inFile, '->', outFile);
+});
 
 appJsBundle.on('end', function() {
   console.log(inFile, '->', outFile);
