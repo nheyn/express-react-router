@@ -6,7 +6,7 @@ import ReactDOMServer from 'react-dom/server';
 import express from 'express';
 import { match, RouterContext } from 'react-router';
 
-import RouteParser from './RouteParser';
+import { getReactRouterRoute, getExpressRouter } from './RouteParser';
 import addPropsToRouter from './addPropsToRouter';
 
 type PropArg = Object | (req: ExpressReq) => Object;
@@ -35,9 +35,8 @@ export default function handleReactRouter(
 	if(!PageComponent) throw new Error('PageComponent is required for the server');
 
 	// Parse Routes
-	const routerParser = new RouteParser(routes);
-	const reactRouterRoutes = routerParser.getReactRouterRoute();
-	const expressRouterFromRoute = routerParser.getExpressRouter();
+	const reactRouterRoutes = getReactRouterRoute(routes);
+	const expressRouterFromRoute = getExpressRouter(routes);
 
 	// Combine props
 	const getAllProps = (req) => {

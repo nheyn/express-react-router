@@ -7,44 +7,33 @@ import React from 'react';
 
 import { hasExpressRouter, getExpressRouterFrom } from './ExpressRoute';
 
+
 /**
- * A class that parse the react router routes, that also contains express http handlers.
+ * Gets the react router route without any of the http handler routes.
+ *
+ * @param router {ReactRouterRoute}  The route to remove the http routes from
+ *          NOTE: React routes can have http sub-routes, but http routes can not have React sub-routes
+ *
+ * @return  {ReactRouterRoute}  The route with out http handlers
  */
-export default class RouteParser {
-	_router: ReactRouterRoute;
+export function getReactRouterRoute(router: ReactRouterRoute): ReactRouterRoute {
+  return filterChildren(router, (route) => !hasExpressRouter(route));
+}
 
-	/**
-	 * A constructor that takes the route that is being parsed.
-	 *
-	 * @param route	{ReactRouterRoute}	The route to parse
-	 *							NOTE:	React routes can have http sub-routes, but http routes can
-	 *									not have React sub-routes
-	 */
-	constructor(route: ReactRouterRoute) {
-		this._router = route;
-	}
-
-	/**
-	 * Gets the react router route without any of the http handler routes.
-	 *
-	 * @return	{ReactRouterRoute}	The route with out http handlers
-	 */
-	getReactRouterRoute(): ReactRouterRoute {
-		return filterChildren(this._router, (route) => !hasExpressRouter(route));
-	}
-
-	/**
-	 * Gets the express router defined in the react router Route.
-	 *
-	 * @return	{ExpressRouter}		The router that handles all non page load requests
-	 */
-	getExpressRouter(): ExpressRouter {
-		let router = express.Router();
-		forEachRoute(this._router, (route, path) => {
-			if(hasExpressRouter(route)) router.use(path, getExpressRouterFrom(route));
-		});
-		return router;
-	}
+/**
+ * Gets the express router defined in the react router Route.
+ *
+ * @param router  {ReactRouterRoute} The route to get the express router from
+ *          NOTE: React routes can have http sub-routes, but http routes can not have React sub-routes
+ *
+ * @return  {ExpressRouter}   The router that handles all non page load requests
+ */
+export function getExpressRouter(router: ReactRouterRoute): ExpressRouter {
+  let expressRouter = express.Router();
+  forEachRoute(router, (route, path) => {
+    if(hasExpressRouter(route)) expressRouter.use(path, getExpressRouterFrom(route));
+  });
+  return expressRouter;
 }
 
 /**

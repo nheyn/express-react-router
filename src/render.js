@@ -4,7 +4,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import RouteParser from './RouteParser';
+import { getReactRouterRoute } from './RouteParser';
 import addPropsToRouter from './addPropsToRouter';
 
 /**
@@ -28,8 +28,7 @@ export default function render(
 	if(!container) throw new Error('A container is required to render');
 
 	// Parse routes
-	const routerParser = new RouteParser(routes);
-	const parsedRoutes = routerParser.getReactRouterRoute();
+	const parsedRoutes = getReactRouterRoute(routes);
 
 	// Render current route
 	if(!propArgs || propArgs.length === 0) {
