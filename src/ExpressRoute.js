@@ -13,11 +13,11 @@ const ExpressRoute = React.createClass({
 		getRouter(props: {[key: string]: any}): ExpressRouter {
 			//NOTE: Remove in feature version
 			if(props.router) {
-				console.warn('<ExpressRouter router={...} /> deprecated, change to <ExpressRouter use={...} />');
+				console.warn('<ExpressRouter router={...} /> is deprecated, change to <ExpressRouter use={...} />');
 				return props.router;
 			}
 			if(props.callback) {
-				console.warn('<ExpressRouter callback={...} /> deprecated, change to <ExpressRouter use={...} />');
+				console.warn('<ExpressRouter callback={...} /> is deprecated, change to <ExpressRouter use={...} />');
 				return props.callback;
 			}
 			//NOTE: Remove in feature version
