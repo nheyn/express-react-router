@@ -6,7 +6,8 @@ import ReactDOMServer from 'react-dom/server';
 import express from 'express';
 import { match, RouterContext } from 'react-router';
 
-import { getReactRouterRoute, getExpressRouter } from './RouteParser';
+import getReactRouterRoute from './router-traversal/getReactRouterRoute';
+import getExpressRouter from './router-traversal/getExpressRouter';
 import addPropsToRouter from './addPropsToRouter';
 
 type PropArg = Object | (req: ExpressReq) => Object;

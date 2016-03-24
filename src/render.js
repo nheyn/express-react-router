@@ -4,7 +4,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { getReactRouterRoute } from './RouteParser';
+import getReactRouterRoute from './router-traversal/getReactRouterRoute';
 import addPropsToRouter from './addPropsToRouter';
 
 /**
