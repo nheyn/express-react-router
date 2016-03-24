@@ -15,16 +15,16 @@ type PropArg = Object | (req: ExpressReq) => Object;
 /**
  * Create an express router for the given react-router routes.
  *
- * @param routes			{ReactRouterRoute}		The router to render
- * @param PageComponent		{ReactClass}			A class that takes the render html string, reactHtml, and a
- *													express request, req, as a prop and returns markup for the
- *													entire page.
- *													NOTE: This is render using 'renderToStaticMarkdown(...)' with
- *													'<!DOCTYPE html>' placed before it.
+ * @param routes				{ReactRouterRoute}			The router to render
+ * @param PageComponent	{ReactClass}						A class that takes the render html string, reactHtml, and a
+ *																							express request, req, as a prop and returns markup for the
+ *																							entire page.
+ *																							NOTE: This is render using 'renderToStaticMarkdown(...)' with
+ *																							'<!DOCTYPE html>' placed before it.
  * @param ...propArgs		{Array<Object | Func>}	All arguments after routes is used to add props to the top-level
- *													components in the router
+ *																							components in the router
  *
- * @return					{ExpressRouter}			The express router to add to the express application
+ * @return							{ExpressRouter}					The express router to add to the express application
  */
 export default function handleReactRouter(
 	routes: ReactRouterRoute,
@@ -34,10 +34,6 @@ export default function handleReactRouter(
 	// Check args route
 	if(!routes) throw new Error('Route is required for the server');
 	if(!PageComponent) throw new Error('PageComponent is required for the server');
-
-	// Parse Routes
-	const reactRouterRoutes = getReactRouterRoute(routes);
-	const expressRouterFromRoute = getExpressRouter(routes);
 
 	// Combine props
 	const getAllProps = (req) => {
@@ -50,8 +46,13 @@ export default function handleReactRouter(
 		return currProps;
 	};
 
+	// Parse Routes
+	const reactRouterRoutes = getReactRouterRoute(routes);
+	const expressRouterFromRoute = getExpressRouter(routes);
+
 	// Create express router
 	let router = express.Router();
+	router.use(expressRouterFromRoute);
 	router.use((req, res, next) => {
 		// Render current route
 		match({ routes: reactRouterRoutes, location: req.url }, (err, redirectLocation, renderProps) => {
@@ -73,24 +74,28 @@ export default function handleReactRouter(
 				const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);
 
 				// Send entire page to client
-				res.send(
-					'<!DOCTYPE html>' +
-					ReactDOMServer.renderToStaticMarkup(<PageComponent req={req} reactHtml={renderedReactHtml} />)
-				);
+				res
+					.status(isPageNotFoundRoutes(renderProps.routes)? 404: 200)
+					.send(`
+						<!DOCTYPE html>
+						${ReactDOMServer.renderToStaticMarkup(<PageComponent req={req} reactHtml={renderedReactHtml} />)}
+					`);
 			}
 			else {
+				console.warn(`Did not find valid path(${req.url}) in router`);
 				next();
 			}
 		});
 	});
-	router.use(expressRouterFromRoute);
-	router.use((req, res) => {
-		// Send basic 404 message
-		res.status(404).send({
-			errorName: '404',
-			errorMessage: `Page Not Found: ${req.url}`
-		});
-	});
 
 	return router;
+}
+
+function isPageNotFoundRoutes(routes: Array<ReactRouterRoute>): bool {
+	const currRoutes = routes[routes.length - 1];
+	if(!currRoutes.path) return false;
+
+	// Check if last char is wild chard (means 404 in react-router)
+	const lastCharInPath = currRoutes.path.charAt(currRoutes.path.length-1);
+	return lastCharInPath === '*';
 }
