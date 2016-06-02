@@ -18,9 +18,9 @@ To create an express middleware router for react-router routes use 'createExpres
 var ExpressReactRouter = require('express-react-router');
 
 var reactRouterMiddleware = ExpressReactRouter.createExpressRouter(
-  routes,      // [Required]     React Router routes
-  PageHandler,  // [Required]     A component the renders the entire html page
-  ...props    // [Optional/Rest]  Objects that contain props to add to the routers Components
+  routes,       // [Required]       React Router routes
+  PageHandler,  // [Required]       A component the renders the entire html page
+  ...props      // [Optional/Rest]  Objects that contain props to add to the routers Components
 );
 ```
 *NOTE:* The final arguments can be functions that are passed the current request and returns the props to add.
@@ -30,9 +30,9 @@ var reactRouterMiddleware = ExpressReactRouter.createExpressRouter(
 To render the routes in the browser use 'render':
 ```
 ExpressReactRouter.render({
-  routes      // [Required]     React Router routes
-  container    // [Required]     The html element to render the route in
-  ...props    // [Optional/Rest]  Objects that contain props to add to the routers Components
+  routes    // [Required]       React Router routes
+  container // [Required]       The html element to render the route in
+  ...props  // [Optional/Rest]  Objects that contain props to add to the routers Components
 });
 ```
 
