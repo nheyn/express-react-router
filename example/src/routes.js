@@ -77,22 +77,22 @@ if(typeof window === 'undefined') {  // Preform only on the server
 /*--------------------------------------------------------------------------------------------------------------------*/
 export default (
   <Router history={browserHistory} >
-    <Route          path="/"            component={PageWrapper}>
-      <IndexRoute                          component={PageOne} />
-      <Route       path="pageTwo"          component={PageTwo}>
-        <Route         path="subPageOne"      component={SubPageOne} />
-        <Route         path="subPageTwo"      component={SubPageTwo} />
-        <Route        path="*"              component={NotFoundPageTwo} />
-        <ExpressRoute  path="identicon.png"  src={indenticonSrc} />
+    <Route  path="/"  component={PageWrapper}>
+      <IndexRoute                         component={PageOne} />
+      <Route          path="pageTwo"      component={PageTwo}>
+        <Route          path="subPageOne"     component={SubPageOne} />
+        <Route          path="subPageTwo"     component={SubPageTwo} />
+        <Route          path="*"              component={NotFoundPageTwo} />
+        <ExpressRoute   path="identicon.png"  src={indenticonSrc} />
       </Route>
-      <Route         path="*"            component={NotFound} />
-      <ExpressRoute  path="favicon.ico"  src={faviconSrc} />
-      <ExpressRoute  path="app.js"        src={appSrc} />
-      <ExpressRoute  path="files"        src={filesSrc} />
-      <ExpressRoute  path="func"          use={func} />
-      <ExpressRoute  path="router"        use={router} />
-      <ExpressRoute  path="errorFunc"    use={errFunc} />
-      <ExpressRoute  path="errorRouter"  use={errRouter} />
+      <Route          path="*"            component={NotFound} />
+      <ExpressRoute   path="favicon.ico"  src={faviconSrc} />
+      <ExpressRoute   path="app.js"       src={appSrc} />
+      <ExpressRoute   path="files"        src={filesSrc} />
+      <ExpressRoute   path="func"         use={func} />
+      <ExpressRoute   path="router"       use={router} />
+      <ExpressRoute   path="errorFunc"    use={errFunc} />
+      <ExpressRoute   path="errorRouter"  use={errRouter} />
     </Route>
   </Router>
 );
