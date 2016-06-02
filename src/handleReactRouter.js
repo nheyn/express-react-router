@@ -16,15 +16,15 @@ type PropArg = Object | (req: ExpressReq) => Object;
  * Create an express router for the given react-router routes.
  *
  * @param routes        {ReactRouterRoute}      The router to render
- * @param PageComponent  {ReactClass}            A class that takes the render html string, reactHtml, and a
+ * @param PageComponent {ReactClass}            A class that takes the render html string, reactHtml, and a
  *                                              express request, req, as a prop and returns markup for the
  *                                              entire page.
  *                                              NOTE: This is render using 'renderToStaticMarkdown(...)' with
  *                                              '<!DOCTYPE html>' placed before it.
- * @param ...propArgs    {Array<Object | Func>}  All arguments after routes is used to add props to the top-level
+ * @param ...propArgs   {Array<Object | Func>}  All arguments after routes is used to add props to the top-level
  *                                              components in the router
  *
- * @return              {ExpressRouter}          The express router to add to the express application
+ * @return              {ExpressRouter}         The express router to add to the express application
  */
 export default function handleReactRouter(
   routes: ReactRouterRoute,
