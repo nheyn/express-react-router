@@ -2,12 +2,12 @@ var fs = require('fs');
 var browserify = require('browserify');
 
 var ignore = [
-	'express',
-	'babel-cli',
-	'babel-preset-es2015',
-	'babel-preset-stage-0',
-	'babel-preset-react',
-	'browserify'
+  'express',
+  'babel-cli',
+  'babel-preset-es2015',
+  'babel-preset-stage-0',
+  'babel-preset-react',
+  'browserify'
 ];
 
 // Browserify client side app

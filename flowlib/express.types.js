@@ -1,6 +1,6 @@
 declare module "express" {
-	declare function Router(): ExpressRouter;
-	declare function static(filePath: string): ExpressRouter;
+  declare function Router(): ExpressRouter;
+  declare function static(filePath: string): ExpressRouter;
 }
 
 type ExpressReq = any; //TODO
@@ -10,9 +10,9 @@ type ExpressErrorCallback = (err: Error, req: ExpressReq, res: ExpressRes, next:
 type ExpressUseArg = ExpressCallback | ExpressErrorCallback | ExpressRouter;
 
 declare class ExpressRouter {
-	use(string_or_useArg: string | ExpressUseArg, useArg?: ExpressUseArg): void;
+  use(string_or_useArg: string | ExpressUseArg, useArg?: ExpressUseArg): void;
 };
 
 declare class ExpressApp extends ExpressRouter {
-	listen(port: number): void;
+  listen(port: number): void;
 };

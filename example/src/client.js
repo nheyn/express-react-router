@@ -10,15 +10,15 @@ window.React = React;
 
 // Render react-router to page
 render(
-	routes,
-	window.document.getElementById('reactContent'),
-	{
-		title: 'Express React Router Example Site'
-	},
-	() => {
-		const url = window.location.pathname;
+  routes,
+  window.document.getElementById('reactContent'),
+  {
+    title: 'Express React Router Example Site'
+  },
+  () => {
+    const url = window.location.pathname;
 
-		document.title = `Example Page - ${url}`;
-		return { url };
-	}
+    document.title = `Example Page - ${url}`;
+    return { url };
+  }
 );
