@@ -1,6 +1,6 @@
 declare module "express" {
   declare function Router(): ExpressRouter;
-  declare function static(filePath: string): ExpressRouter;
+  declare function exports(filePath: string): ExpressRouter;
 }
 
 type ExpressReq = any; //TODO
