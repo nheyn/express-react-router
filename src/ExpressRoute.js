@@ -12,13 +12,7 @@ import type { Router } from 'react-router';
  */
 const ExpressRoute = React.createClass({
   statics: {
-    hasRouter: true,
-    getRouter(props: {[key: string]: any}): ExpressRouter {
-      if(props.use)        return props.use;
-      else if(props.src)  return express.static(props.src);
-
-      throw new Error("RouterRoute must have 'use' or 'src' prop.");
-    }
+    hasRouter: true
   },
   propTypes: {
     path: React.PropTypes.string,
@@ -54,5 +48,11 @@ export function getExpressRouterFrom(route: Router): ExpressRouter {
     throw new Error("Routes passed to 'getRouterFrom' must be an EpressRoute.");
   }
 
-  return route.type.getRouter(route.props);
+  return getRouter(route.props);
+}
+
+function getRouter(props: {[key: string]: any}): ExpressRouter {
+  if(props.use)       return props.use;
+  else if(props.src)  return express.static(props.src);
+  else                throw new Error("RouterRoute must have 'use' or 'src' prop.");
 }
