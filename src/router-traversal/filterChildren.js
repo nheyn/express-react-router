@@ -3,7 +3,9 @@
  */
 import React from 'react';
 
-type RouteReduceFunc = (route: ReactRouterRoute) => bool;
+import type { Router } from 'react-router';
+
+type RouteReduceFunc = (route: Router) => bool;
 
 /**
  * Get the given route with its children filtered using the given function.
@@ -16,7 +18,7 @@ type RouteReduceFunc = (route: ReactRouterRoute) => bool;
  *
  * @return        The react-router <Route /> without the filtered out children
  */
-export default function filterChildren(route: ReactRouterRoute, checkFn: RouteReduceFunc): ReactRouterRoute {
+export default function filterChildren(route: Router, checkFn: RouteReduceFunc): Router {
   const { children } = route.props;
   if(!children) return route;
 

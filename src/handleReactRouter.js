@@ -10,12 +10,14 @@ import getReactRouterRoute from './router-traversal/getReactRouterRoute';
 import getExpressRouter from './router-traversal/getExpressRouter';
 import addPropsToRouter from './addPropsToRouter';
 
-type PropArg = Object | (req: ExpressReq) => Object;
+import type { Router } from 'react-router';
+
+type PropArg = Object | (req: Router) => Object;
 
 /**
  * Create an express router for the given react-router routes.
  *
- * @param routes        {ReactRouterRoute}      The router to render
+ * @param routes        {Router}                The router to render
  * @param PageComponent {ReactClass}            A class that takes the render html string, reactHtml, and a
  *                                              express request, req, as a prop and returns markup for the
  *                                              entire page.
@@ -27,7 +29,7 @@ type PropArg = Object | (req: ExpressReq) => Object;
  * @return              {ExpressRouter}         The express router to add to the express application
  */
 export default function handleReactRouter(
-  routes: ReactRouterRoute,
+  routes: Router,
   PageComponent: ReactClass,
   ...propArgs: Array<PropArg>
 ): ExpressRouter {
@@ -91,7 +93,7 @@ export default function handleReactRouter(
   return router;
 }
 
-function isPageNotFoundRoutes(routes: Array<ReactRouterRoute>): bool {
+function isPageNotFoundRoutes(routes: Array<Router>): bool {
   const currRoutes = routes[routes.length - 1];
   if(!currRoutes.path) return false;
 

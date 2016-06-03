@@ -3,6 +3,8 @@
  */
 import React from 'react';
 
+import type { Router } from 'react-router';
+
 /**
  * Add props to a the top level component when a route is rendered.
  *
@@ -14,10 +16,10 @@ import React from 'react';
  * @return          {ReactRouter} The router that will add props to the rendered component
  */
 export default function addPropsToRouter(
-  router: ReactRouterRoute,
+  router: Router,
   props: ?Object,
   getProps?: Function
-): ReactRouterRoute {
+): Router {
   const createElement = (Component, reactRouterProps) => {
     const staticProps = props? props: {};
     const dynamicProps = getProps? getProps(): {};

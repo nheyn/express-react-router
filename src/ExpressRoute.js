@@ -4,6 +4,9 @@
 import React from 'react';
 import express from 'express';
 
+
+import type { Router } from 'react-router';
+
 /**
  * A React class, that can be use instead of React Router's Route class, that can
  */
@@ -34,7 +37,7 @@ const ExpressRoute = React.createClass({
     src: React.PropTypes.string,
     use: React.PropTypes.any,
   },
-  render(): ReactElement {
+  render(): React.Element {
     throw new Error('RouterRoute should never be rendered');
   }
 });
@@ -47,7 +50,7 @@ export default ExpressRoute;
  *
  * @return      TRUE if the given route contains a router, else FALSE
  */
-export function hasExpressRouter(route: ReactRouterRoute): bool {
+export function hasExpressRouter(route: Router): bool {
   return route.type.hasRouter? true: false;
 }
 
@@ -58,7 +61,7 @@ export function hasExpressRouter(route: ReactRouterRoute): bool {
  *
  * @return      The router from the route
  */
-export function getExpressRouterFrom(route: ReactRouterRoute): ExpressRouter {
+export function getExpressRouterFrom(route: Router): ExpressRouter {
   if(!hasExpressRouter(route)) {
     throw new Error("Routes passed to 'getRouterFrom' must be an EpressRoute.");
   }

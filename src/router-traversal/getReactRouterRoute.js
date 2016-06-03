@@ -4,15 +4,16 @@
 import { hasExpressRouter } from '../ExpressRoute';
 import filterChildren from './filterChildren';
 
+import type { Router } from 'react-router';
+
 /**
  * Gets the react router route without any of the http handler routes.
  *
- * @param router {ReactRouterRoute} The route to remove the http routes from
- *                                  NOTE: React routes can have http sub-routes, but http routes can not have
- *                                  React sub-routes
+ * @param router  {Router} The route to remove the http routes from
+ *                         NOTE: React routes can have http sub-routes, but http routes can not have React sub-routes
  *
- * @return  {ReactRouterRoute}      The route with out http handlers
+ * @return        {Router} The route with out http handlers
  */
-export default function getReactRouterRoute(router: ReactRouterRoute): ReactRouterRoute {
+export default function getReactRouterRoute(router: Router): Router {
   return filterChildren(router, (route) => !hasExpressRouter(route));
 }

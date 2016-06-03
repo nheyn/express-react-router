@@ -4,7 +4,9 @@
 import path from 'path';
 import React from 'react';
 
-type RouteMapFunc = (el: ReactRouterRoute, path: string) => void;
+import type { Router } from 'react-router';
+
+type RouteMapFunc = (el: Router, path: string) => void;
 
 /**
  * Call the given callback for each element in the given react-router <Route />.
@@ -15,7 +17,7 @@ type RouteMapFunc = (el: ReactRouterRoute, path: string) => void;
  * @param mapFn       The function to call with each route, and its current path in the router
  * @param [currPath]  The path of the given route
  */
-export default function forEachRoute(route: ReactRouterRoute, mapFn: RouteMapFunc, currPath: string = '') {
+export default function forEachRoute(route: Router, mapFn: RouteMapFunc, currPath: string = '') {
   mapFn(route, currPath);
 
   React.Children.forEach(route.props.children, (child) => {

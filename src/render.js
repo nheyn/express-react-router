@@ -7,6 +7,8 @@ import ReactDOM from 'react-dom';
 import getReactRouterRoute from './router-traversal/getReactRouterRoute';
 import addPropsToRouter from './addPropsToRouter';
 
+import type { Router } from 'react-router';
+
 /**
  * Render the given routes to the given container.
  *
@@ -19,10 +21,10 @@ import addPropsToRouter from './addPropsToRouter';
  * @return            {ReactComponent}        The render componet (see return of 'React.render')
  */
 export default function render(
-  routes: ReactRouterRoute,
+  routes: Router,
   container: any,         //NOTE, 'any' is in lib/react.js but is really a DOMElement
   ...propArgs: Array<Object | () => Object>
-): ReactComponent {
+): React.Component {
   // Check args
   if(!routes) throw new Error('Route is required to render');
   if(!container) throw new Error('A container is required to render');
@@ -62,11 +64,11 @@ export default function render(
 }
 
 function renderWithProps(
-  routes: ReactRouterRoute,
+  routes: Router,
   container: any,
   staticProps: Object,
   getDynamicProps: () => Object
-): ReactComponent {
+): React.Component {
   // Add props to the router
   const routesWithProps = addPropsToRouter(routes, staticProps, getDynamicProps);
 
