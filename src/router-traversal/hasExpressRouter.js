@@ -11,14 +11,14 @@ import type { Router } from 'react-router';
  * @return      TRUE if the given route contains a router, else FALSE
  */
 export default function hasExpressRouter(route: Router): bool {
-  //NOTE: Remove in feature version
+  //NOTE: Remove in future version
   if(route.type && route.type.hasRouter === true) {
     console.warn(
       "<ExpressRoute /> has been deprecated, use react-router's <Route /> component with 'use' or 'src' prop."
     );
     return true;
   }
-  //NOTE: Remove in feature version
+  //NOTE: Remove in future version
 
   //TODO, check if is <Route /> or <IndexRoute />
   return false;
