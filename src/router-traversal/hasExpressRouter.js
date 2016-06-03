@@ -1,7 +1,7 @@
 /**
  * @flow
  */
-import type { Router } from 'react-router';
+import type { Route, IndexRoute } from 'react-router';
 
 /**
  * Check if the given route contains an express router.
@@ -10,7 +10,7 @@ import type { Router } from 'react-router';
  *
  * @return      TRUE if the given route contains a router, else FALSE
  */
-export default function hasExpressRouter(route: Router): bool {
+export default function hasExpressRouter(route: Route | IndexRoute): bool {
   //NOTE: Remove in future version
   if(route.type && route.type.hasRouter === true) {
     console.warn(
