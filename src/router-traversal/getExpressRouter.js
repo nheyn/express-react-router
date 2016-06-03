@@ -3,10 +3,11 @@
  */
 import express from 'express';
 
-import { hasExpressRouter, getExpressRouterFrom } from '../ExpressRoute';
+
+import hasExpressRouter from './hasExpressRouter';
 import forEachRoute from './forEachRoute';
 
-import type { Router } from 'react-router';
+import type { Router, Route, IndexRoute } from 'react-router';
 
 /**
  * Gets the express router defined in the react router Route.
@@ -23,4 +24,17 @@ export default function getExpressRouter(router: Router): ExpressRouter {
     if(hasExpressRouter(route)) expressRouter.use(path, getExpressRouterFrom(route));
   });
   return expressRouter;
+}
+
+/**
+ * Gets the express router in the given route.
+ *
+ * @param route  The route to get the router from
+ *
+ * @return      The router from the route
+ */
+function getExpressRouterFrom({ props }: Route | IndexRoute): ExpressRouter {
+  if(props.use)       return props.use;
+  else if(props.src)  return express.static(props.src);
+  else                throw new Error("RouterRoute must have 'use' or 'src' prop.");
 }

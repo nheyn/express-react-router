@@ -1,7 +1,7 @@
 /**
  * @flow
  */
-import { hasExpressRouter } from '../ExpressRoute';
+import hasExpressRouter from './hasExpressRouter';
 import filterChildren from './filterChildren';
 
 import type { Router } from 'react-router';
