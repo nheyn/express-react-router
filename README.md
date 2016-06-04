@@ -12,6 +12,20 @@ Also includes a new react render function for the client side, that helps with c
 ### Usage
 See basic example in /example/ directory (see below for more information).
 
+#### Add Express Routers
+To add an express router to the react-router jsx router, add the 'src' or 'use' prop to a <Router />, <Route /> or <IndexRoute /> component.
+
+```
+const router = (
+  <Router>
+    <Route path="/" use={someMiddleware}>                   {/* Use the given express middleware function or router */}
+      <IndexRoute component={Home} />                       {/* Rendering given component */}
+      <Route path="/logo.png" src="path/to/logo.png" />     {/* Serve the static files at the given path */}
+    </Route>
+  </Router>
+);
+```
+
 #### On Server
 To create an express middleware router for react-router routes use 'createExpressRouter':
 ```
