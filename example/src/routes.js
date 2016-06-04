@@ -2,7 +2,6 @@ import path from 'path';
 import express from 'express';
 import React from 'react';
 import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router';
-import { ExpressRoute } from 'express-react-router';
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 //  --- React Router Components ---
@@ -78,21 +77,21 @@ if(typeof window === 'undefined') {  // Preform only on the server
 export default (
   <Router history={browserHistory} >
     <Route  path="/"  component={PageWrapper}>
-      <IndexRoute                         component={PageOne} />
-      <Route          path="pageTwo"      component={PageTwo}>
-        <Route          path="subPageOne"     component={SubPageOne} />
-        <Route          path="subPageTwo"     component={SubPageTwo} />
-        <Route          path="*"              component={NotFoundPageTwo} />
-        <ExpressRoute   path="identicon.png"  src={indenticonSrc} />
+      <IndexRoute                 component={PageOne} />
+      <Route    path="pageTwo"    component={PageTwo}>
+        <Route    path="subPageOne"     component={SubPageOne} />
+        <Route    path="subPageTwo"     component={SubPageTwo} />
+        <Route    path="*"              component={NotFoundPageTwo} />
+        <Route    path="identicon.png"  src={indenticonSrc} />
       </Route>
-      <Route          path="*"            component={NotFound} />
-      <ExpressRoute   path="favicon.ico"  src={faviconSrc} />
-      <ExpressRoute   path="app.js"       src={appSrc} />
-      <ExpressRoute   path="files"        src={filesSrc} />
-      <ExpressRoute   path="func"         use={func} />
-      <ExpressRoute   path="router"       use={router} />
-      <ExpressRoute   path="errorFunc"    use={errFunc} />
-      <ExpressRoute   path="errorRouter"  use={errRouter} />
+      <Route   path="*"            component={NotFound} />
+      <Route   path="favicon.ico"  src={faviconSrc} />
+      <Route   path="app.js"       src={appSrc} />
+      <Route   path="files"        src={filesSrc} />
+      <Route   path="func"         use={func} />
+      <Route   path="router"       use={router} />
+      <Route   path="errorFunc"    use={errFunc} />
+      <Route   path="errorRouter"  use={errRouter} />
     </Route>
   </Router>
 );
