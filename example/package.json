@@ -1,6 +1,6 @@
 {
   "name": "express-react-router-example",
-  "version": "2.2.1",
+  "version": "2.3.0-dev",
   "description": "A simple website that uses express-react-router",
   "author": "Nick Heyn <nick@heyn.io>",
   "dependencies": {
