@@ -26,7 +26,7 @@ export default function getExpressRouter(router: Router): ExpressRouter {
 
   forEachRoute(router, (route, path) => {
     if(containsExpressRouter(route)) {
-      expressRouter.use(router.type === IndexRoute? '/': path, getExpressRouterFrom(route));
+      expressRouter.use(path, getExpressRouterFrom(route));
     }
   });
   return expressRouter;
