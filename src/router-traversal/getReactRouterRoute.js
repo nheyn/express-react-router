@@ -1,6 +1,7 @@
 /**
  * @flow
  */
+import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 
 import isExpressRoute from './isExpressRoute';
@@ -28,7 +29,17 @@ function containsReactComponent(route: Route | IndexRoute): bool {
   if(route.type === Route || route.type === IndexRoute) {
     const { props } = route;
 
+    // Check if this component has a react component
     if(props.component) return true;
+
+    // Check if the children has a react component
+    if(props.children) {
+      let childHasReactComponent = false;
+      React.Children.forEach(props.children, (child) => {
+        childHasReactComponent = childHasReactComponent || containsReactComponent(child);
+      });
+      if(childHasReactComponent) return true;
+    }
   }
 
   return false;
