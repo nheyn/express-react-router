@@ -80,7 +80,9 @@ export default (
       <IndexRoute                 component={PageOne} />
       <Route    path="pageTwo"    component={PageTwo}>
         <Route    path="subPageOne"     component={SubPageOne} />
-        <Route    path="subPageTwo"     component={SubPageTwo} />
+        <Route    path="subPageTwo">
+          <IndexRoute                     component={SubPageTwo} />
+        </Route>
         <Route    path="*"              component={NotFoundPageTwo} />
         <Route    path="identicon.png"  src={indenticonSrc} />
       </Route>
