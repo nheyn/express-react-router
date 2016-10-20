@@ -3,7 +3,10 @@
  *
  * //NOTE: Remove in future version
  */
-import type { Route, IndexRoute } from 'react-router';
+import type React from 'react';
+
+type Route = React.Element<*>;
+type IndexRoute = React.Element<*>;
 
 /**
  * Check if the given route contains an express router.

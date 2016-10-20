@@ -7,7 +7,7 @@ import { Route, IndexRoute } from 'react-router';
 import isExpressRoute from './isExpressRoute';
 import filterChildren from './filterChildren';
 
-import type { Router } from 'react-router';
+type Router = React.Element<*>;
 
 /**
  * Gets the react router route without any of the http handler routes.

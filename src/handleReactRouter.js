@@ -10,7 +10,7 @@ import getReactRouterRoute from './router-traversal/getReactRouterRoute';
 import getExpressRouter from './router-traversal/getExpressRouter';
 import addPropsToRouter from './addPropsToRouter';
 
-import type { Router } from 'react-router';
+type Router = React.Element<*>;
 
 type PropArg = Object | (req: Router) => Object;
 
@@ -30,7 +30,7 @@ type PropArg = Object | (req: Router) => Object;
  */
 export default function handleReactRouter(
   routes: Router,
-  PageComponent: ReactClass,
+  PageComponent: React.Component<*, *, *>,
   ...propArgs: Array<PropArg>
 ): ExpressRouter {
   // Check args route
@@ -74,14 +74,15 @@ export default function handleReactRouter(
 
         // Render react-router handler
         const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);
+        const pageHtml = ReactDOMServer.renderToStaticMarkup(
+          // $FlowIssue
+          <PageComponent req={req} reactHtml={renderedReactHtml} />
+        );
 
         // Send entire page to client
         res
           .status(isPageNotFoundRoutes(renderProps.routes)? 404: 200)
-          .send(`
-            <!DOCTYPE html>
-            ${ReactDOMServer.renderToStaticMarkup(<PageComponent req={req} reactHtml={renderedReactHtml} />)}
-          `);
+          .send(`<!DOCTYPE html> ${pageHtml}`);
       }
       else {
         console.warn(`Did not find valid path(${req.url}) in router`);
@@ -93,7 +94,7 @@ export default function handleReactRouter(
   return router;
 }
 
-function isPageNotFoundRoutes(routes: Array<Router>): bool {
+function isPageNotFoundRoutes(routes: Array<any>): bool {
   const currRoutes = routes[routes.length - 1];
   if(!currRoutes.path) return false;
 

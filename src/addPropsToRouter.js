@@ -3,7 +3,7 @@
  */
 import React from 'react';
 
-import type { Router } from 'react-router';
+type Router = React.Element<*>;
 
 /**
  * Add props to a the top level component when a route is rendered.

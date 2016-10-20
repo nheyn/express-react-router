@@ -4,7 +4,7 @@
 import path from 'path';
 import React from 'react';
 
-import type { Router } from 'react-router';
+type Router = React.Element<*>;
 
 type RouteMapFunc = (el: Router, path: string) => void;
 

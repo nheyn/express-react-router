@@ -4,8 +4,6 @@
 import React from 'react';
 import express from 'express';
 
-import type { Router } from 'react-router';
-
 /**
  * A React class, that can be use instead of React Router's Route class, that can
  */
@@ -18,7 +16,7 @@ const ExpressRoute = React.createClass({
     src: React.PropTypes.string,
     use: React.PropTypes.any,
   },
-  render(): React.Element {
+  render(): React.Element<*> {
     throw new Error('RouterRoute should never be rendered');
   }
 });

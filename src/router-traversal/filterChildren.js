@@ -3,8 +3,7 @@
  */
 import React from 'react';
 
-import type { Router } from 'react-router';
-
+type Router = React.Element<*>;
 type RouteReduceFunc = (route: Router) => bool;
 
 /**
