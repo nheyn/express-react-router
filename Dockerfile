@@ -15,7 +15,9 @@ COPY .flowconfig ./.flowconfig
 COPY flowlib/ ./flowlib/
 COPY .babelrc ./.babelrc
 COPY package.json ./package.json
+COPY index.es6.js ./index.es6.js
 COPY src/ ./src/
+COPY client/ ./client/
 COPY example/ ./example/
 
 RUN chown node:node ./

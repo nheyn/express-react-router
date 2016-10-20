@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 
 import React from 'react';
-import { render } from 'express-react-router';
+import { render } from 'express-react-router/client';
 
 import routes from './routes';
 

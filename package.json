@@ -3,7 +3,7 @@
   "version": "2.3.1",
   "description": "Express middleware for react-router",
   "author": "Nick Heyn <nick@heyn.io>",
-  "main": "./lib/index.js",
+  "main": "./index.js",
   "repository" : {
     "type" : "git",
     "url" : "https://github.com/nheyn/express-react-router"
@@ -24,9 +24,14 @@
   },
   "scripts": {
     "flow": "flow check",
-    "babel": "babel ./src/ -d ./lib/",
+    "babel:lib": "babel ./src/ -d ./lib/",
+    "babel:index": "babel ./index.es6.js -o ./index.js && babel ./client/index.es6.js -o ./client/index.js",
+    "babel": "npm run babel:lib && npm run babel:index",
 
-    "prepublish": "npm run flow && npm run babel"
+    "test": "npm run flow",
+    "build": "npm run babel",
+
+    "prepublish": "npm run test && npm run build"
   },
   "license": "MIT"
 }
