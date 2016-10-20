@@ -64,6 +64,7 @@ app.use((err, req, res, next) => {
   res.status(500).send(
     '<!DOCTYPE html>' +
     ReactDOMServer.renderToStaticMarkup(<ErrorPage err={err} />)
+    //TODO, make it so ReactDOMServer is not nessesary
   );
 });
 
