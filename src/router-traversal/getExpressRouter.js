@@ -7,6 +7,8 @@ import { Router, Route, IndexRoute } from 'react-router';
 import isExpressRoute from './isExpressRoute';
 import forEachRoute from './forEachRoute';
 
+import type { Router as ExpressRouter } from 'express';
+
 /**
  * Gets the express router defined in the react router Route.
  *

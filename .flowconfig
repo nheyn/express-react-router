@@ -1,13 +1,10 @@
 [ignore]
-.*/example/.*
 .*/node_modules/.*
 .*/lib/.*
 
 [include]
 
 [libs]
-flowlib/
-node_modules/iflow-react-router/index.js.flow
+flow-typed/
 
 [options]
-suppress_comment= \\(.\\|\n\\)*\\$FlowIssue
