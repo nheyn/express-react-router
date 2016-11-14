@@ -19,46 +19,47 @@ import type { Router as ExpressRouter } from 'express';
  * @return        {ExpressRouter}     The router that handles all non page load requests
  */
 export default function getExpressRouter(router: Router): ExpressRouter {
+  if(router.type !== Router) throw new Error('Given router must be a react-router Router component.');
+
   let expressRouter = express.Router();
 
-  if(router.type !== Router) throw new Error('Given router must be a react-router Router component');
-  if(containsExpressRouter(router)) {
-    expressRouter.use(getExpressRouterFrom(router));
-  }
+  addRouteToRouter(expressRouter, router);
+  forEachRoute(router, (route, path) => addRouteToRouter(expressRouter, route, path));
 
-  forEachRoute(router, (route, path) => {
-    if(containsExpressRouter(route)) {
-      expressRouter.use(path, getExpressRouterFrom(route));
-    }
-  });
   return expressRouter;
 }
 
-/**
- * Gets the express router in the given route.
- *
- * @param route  The route to get the router from
- *
- * @return      The router from the route
- */
-function getExpressRouterFrom({ props }: Route | IndexRoute): ExpressRouter {
-  if(props.use)       return props.use;
-  else if(props.src)  return express.static(props.src);
-  else                throw new Error("RouterRoute must have 'use' or 'src' prop.");
-}
-
-function containsExpressRouter(route: Route | IndexRoute): bool {
-  //NOTE: Remove in future version
-  if(isExpressRoute(route)) return true;
-  //NOTE: Remove in future version
-
-  if(route.type === Router || route.type === Route || route.type === IndexRoute) {
-    const { props } = route;
-
-    if(props.use) return true;
-    if(props.src) return true;
-    return (props.use || props.src)? true: false;
+function addRouteToRouter(expressRouter: ExpressRouter, route: Router | Route | IndexRoute, path?: string) {
+  if(route.type !== Router && route.type !== Route && route.type !== IndexRoute) {
+    //NOTE: Remove in future version
+    if(!isExpressRoute(route)) {
+    //NOTE: Remove in future version
+      throw new Error(`Invalid component(${route.type}) in router @ ${path? path: '/'}.`);
+    }
   }
 
-  return false;
+  // Check and add routers for each method
+  ['use', 'all', 'get', 'post', 'put', 'delete'].forEach((method) => {
+    const currRouter = route.props[method];
+    if(!currRouter) return;
+
+    // $FlowFixMe
+    const currMethod = expressRouter[method];
+    if(path) {
+      if(Array.isArray(currRouter)) currMethod(path, ...currRouter);
+      else                          currMethod(path, currRouter);
+    }
+    else {
+      if(Array.isArray(currRouter)) currMethod(...currRouter);
+      else                          currMethod(currRouter);
+    }
+  });
+
+  // Check and add router for static files to serve
+  if(route.props.src) {
+    const staticRouter = express.static(route.props.src);
+
+    if(path)  expressRouter.use(path, staticRouter);
+    else      expressRouter.use(staticRouter)
+  }
 }

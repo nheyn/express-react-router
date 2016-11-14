@@ -10,10 +10,10 @@ import getReactRouterRoute from './router-traversal/getReactRouterRoute';
 import getExpressRouter from './router-traversal/getExpressRouter';
 import addPropsToRouter from './addPropsToRouter';
 
-import type { Router as ExpressRouter } from 'express';
+import type { $Request as Request, Router as ExpressRouter } from 'express';
 type ReactRouter = React.Element<*>;
 
-type PropArg = Object | (req: ReactRouter) => Object;
+type PropArg = Object | (req: Request) => Object;
 
 /**
  * Create an express router for the given react-router routes.
@@ -31,7 +31,8 @@ type PropArg = Object | (req: ReactRouter) => Object;
  */
 export default function handleReactRouter(
   routes: ReactRouter,
-  PageComponent: React.Component<*, *, *>,
+  //ERROR, aperently React.Component<*, *, *> is not a component: "Expected React component instead of React$Component"
+  PageComponent: any,
   ...propArgs: Array<PropArg>
 ): ExpressRouter {
   // Check args route
@@ -78,7 +79,6 @@ export default function handleReactRouter(
         // Render page with current element from router
         const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);
         const pageHtml = ReactDOMServer.renderToStaticMarkup(
-          // $FlowFixMe
           <PageComponent req={req} reactHtml={renderedReactHtml} />
         );
 
@@ -88,10 +88,35 @@ export default function handleReactRouter(
           .send(`<!DOCTYPE html> ${pageHtml}`);
       }
       else {
-        console.warn(`Did not find valid path(${req.url}) in router`);
-        next();
+        // Render page with error
+        const pageHtml = ReactDOMServer.renderToStaticMarkup(
+          <PageComponent req={req} error={new Error(`Invalid url: ${req.url}`)} is404 />
+        );
+
+        // Send entire page to client
+        res
+          .status(404)
+          .send(`<!DOCTYPE html> ${pageHtml}`);
       }
     });
+  });
+  // $FlowFixMe
+  router.use((err, req, res, next) => {
+    // Skip this middleware if the request doesn't not accept html
+    if(!req.accepts('html')) {
+      next(err);
+      return;
+    }
+
+    // Render page with error
+    const pageHtml = ReactDOMServer.renderToStaticMarkup(
+      <PageComponent req={req} error={err} />
+    );
+
+    // Send entire page to client
+    res
+      .status(500)
+      .send(`<!DOCTYPE html> ${pageHtml}`);
   });
 
   return router;
@@ -101,7 +126,7 @@ function isPageNotFoundRoutes(routes: Array<any>): bool {
   const currRoutes = routes[routes.length - 1];
   if(!currRoutes.path) return false;
 
-  // Check if last char is wild chard (means 404 in react-router)
+  // Check if last char is wild chard, NOTE: means any wildcard (non-404) pages must use params
   const lastCharInPath = currRoutes.path.charAt(currRoutes.path.length-1);
   return lastCharInPath === '*';
 }
