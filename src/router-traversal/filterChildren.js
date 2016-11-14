@@ -25,7 +25,7 @@ export default function filterChildren(route: Router, checkFn: RouteReduceFunc):
     route,
     {},
     React.Children.toArray(children)
-      .filter(checkFn)
+      .filter((child) => child? checkFn(child): false)
       .map((child) => filterChildren(child, checkFn))
   );
 }

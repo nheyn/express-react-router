@@ -21,7 +21,8 @@ export default function forEachRoute(route: Router, mapFn: RouteMapFunc, currPat
   mapFn(route, currPath);
 
   React.Children.forEach(route.props.children, (child) => {
-     const nextPath = child.props.path? path.join(currPath, child.props.path): currPath;
+    if(!child) return;
+    const nextPath = child.props.path? path.join(currPath, child.props.path): currPath;
 
      forEachRoute(child, mapFn, nextPath);
   });
