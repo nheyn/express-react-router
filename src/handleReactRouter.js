@@ -10,14 +10,15 @@ import getReactRouterRoute from './router-traversal/getReactRouterRoute';
 import getExpressRouter from './router-traversal/getExpressRouter';
 import addPropsToRouter from './addPropsToRouter';
 
-type Router = React.Element<*>;
+import type { Router as ExpressRouter } from 'express';
+type ReactRouter = React.Element<*>;
 
-type PropArg = Object | (req: Router) => Object;
+type PropArg = Object | (req: ReactRouter) => Object;
 
 /**
  * Create an express router for the given react-router routes.
  *
- * @param routes        {Router}                The router to render
+ * @param routes        {ReactRouter}           The router to render
  * @param PageComponent {ReactClass}            A class that takes the render html string, reactHtml, and a
  *                                              express request, req, as a prop and returns markup for the
  *                                              entire page.
@@ -29,7 +30,7 @@ type PropArg = Object | (req: Router) => Object;
  * @return              {ExpressRouter}         The express router to add to the express application
  */
 export default function handleReactRouter(
-  routes: Router,
+  routes: ReactRouter,
   PageComponent: React.Component<*, *, *>,
   ...propArgs: Array<PropArg>
 ): ExpressRouter {
@@ -54,12 +55,14 @@ export default function handleReactRouter(
 
   // Create express router
   let router = express.Router();
+  //$FlowFixMe
   router.use(expressRouterFromRoute);
+  // $FlowFixMe
   router.use((req, res, next) => {
     // Render current route
     match({ routes: reactRouterRoutes, location: req.url }, (err, redirectLocation, renderProps) => {
       if(err) {
-        // Handle errors in route
+        // Handle errors below
         next(err);
       }
       else if(redirectLocation) {
@@ -72,10 +75,10 @@ export default function handleReactRouter(
         // Add props
         if(propArgs.length) routerContextElement = addPropsToRouter(routerContextElement, getAllProps(req));
 
-        // Render react-router handler
+        // Render page with current element from router
         const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);
         const pageHtml = ReactDOMServer.renderToStaticMarkup(
-          // $FlowIssue
+          // $FlowFixMe
           <PageComponent req={req} reactHtml={renderedReactHtml} />
         );
 
