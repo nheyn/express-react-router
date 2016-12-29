@@ -2,13 +2,11 @@
  * @flow
  */
 import React from 'react';
-import { Route, IndexRoute } from 'react-router';
+import { Router, Route, IndexRoute } from 'react-router';
 
 import isExpressRoute from './isExpressRoute';
 import filterChildren from './filterChildren';
 import wasMadeUsing from './wasMadeUsing';
-
-type Router = React.Element<*>;
 
 /**
  * Gets the react router route without any of the http handler routes.
@@ -18,7 +16,15 @@ type Router = React.Element<*>;
  *
  * @return        {Router} The route with out http handlers
  */
-export default function getReactRouterRoute(router: Router): Router {
+export default function getReactRouterRoute(router: React.Element<*>): React.Element<*> {
+  // Skip wrapper components (like react-redux Provider)
+  if(!wasMadeUsing(router, Router)) {
+    if(React.Children.count(router.props.children) !== 1) throw new Error('Must be given a single root Router.');
+    const child = React.Children.only(router.props.children);
+
+    return React.cloneElement(router, null, getReactRouterRoute(child));
+  }
+
   return filterChildren(router, (route) => containsReactComponent(route));
 }
 
