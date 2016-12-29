@@ -4,7 +4,6 @@
 import express from 'express';
 import { Router, Route, IndexRoute } from 'react-router';
 
-import isExpressRoute from './isExpressRoute';
 import forEachRoute from './forEachRoute';
 import wasMadeUsing from './wasMadeUsing';
 
@@ -32,11 +31,7 @@ export default function getExpressRouter(router: Router): ExpressRouter {
 
 function addRouteToRouter(expressRouter: ExpressRouter, route: Router | Route | IndexRoute, path?: string) {
   if(!wasMadeUsing(route, Router) && !wasMadeUsing(route, Route) && !wasMadeUsing(route, IndexRoute)) {
-    //NOTE: Remove in future version
-    if(!isExpressRoute(route)) {
-    //NOTE: Remove in future version
-      throw new Error(`Invalid component(${route.type}) in router @ ${path? path: '/'}.`);
-    }
+    throw new Error(`Invalid component(${route.type}) in router @ ${path? path: '/'}.`);
   }
 
   // Check and add routers for each method

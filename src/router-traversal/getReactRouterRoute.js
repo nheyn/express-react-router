@@ -4,7 +4,6 @@
 import React from 'react';
 import { Router, Route, IndexRoute } from 'react-router';
 
-import isExpressRoute from './isExpressRoute';
 import filterChildren from './filterChildren';
 import wasMadeUsing from './wasMadeUsing';
 
@@ -29,10 +28,6 @@ export default function getReactRouterRoute(router: React.Element<*>): React.Ele
 }
 
 function containsReactComponent(route: Route | IndexRoute): bool {
-  //NOTE: Remove in future version
-  if(isExpressRoute(route)) return false;
-  //NOTE: Remove in future version
-
   if(wasMadeUsing(route, Route) || wasMadeUsing(route, IndexRoute)) {
     const { props } = route;
 
