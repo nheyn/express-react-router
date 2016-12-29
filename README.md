@@ -13,7 +13,7 @@ Also includes a new react render function for the client side, that helps with c
 See basic example in /example/ directory (see below for more information).
 
 #### Add Express Routers
-To add an express router to the react-router jsx router, add the 'src' or 'use' prop to a <Router />, <Route /> or <IndexRoute /> component.
+To add an express router(s) to the react-router jsx router, add the 'use'/'add'/'get'/'post'/'put'/'delete' prop to a <Router />, <Route /> or <IndexRoute /> component. To add static files to the router add the 'src' prop to a component.
 
 ```
 const router = (
@@ -37,12 +37,14 @@ var reactRouterMiddleware = ExpressReactRouter.createExpressRouter(
   ...props      // [Optional/Rest]  Objects that contain props to add to the routers Components
 );
 ```
-*NOTE:* The final arguments can be functions that are passed the current request and returns the props to add.
+*NOTE:* The rest arguments can be functions that are passed the current request and returns the props to add.
 
 
 #### On Client
 To render the routes in the browser use 'render':
 ```
+var ExpressReactRouter = require('express-react-router/client');
+
 ExpressReactRouter.render({
   routes    // [Required]       React Router routes
   container // [Required]       The html element to render the route in
@@ -50,22 +52,15 @@ ExpressReactRouter.render({
 });
 ```
 
-*NOTE:* The final arguments can be functions that returns the props to add. They are called when the component is rendered or updated.
+*NOTE:* The rest arguments can be functions that returns the props to add. They are called when the component is rendered or updated.
 
 
 ### Documentation
 Basic usage is given above. More detailed documentation is before class/function definitions within the code.
 
 ### Example
-A basic site using express-react-router is in the /example/ directory.
-To run using docker, run:
-```
-cd <path to repo>
-docker build -t express-react-router:example .
-docker build -d  -p <external port>:8080 express-react-router:example
-```
+A basic site using express-react-router is in my [react-stack-skeleton](https://github.com/nheyn/react-stack-skeleton) repo.
 
 ### Plans
 * Get documentation from code
-* Create boilerplate example, that new projects can start from
-* Create flowtype definitions for public API
+* Add unit tests to each function
