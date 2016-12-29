@@ -6,6 +6,7 @@ import { Route, IndexRoute } from 'react-router';
 
 import isExpressRoute from './isExpressRoute';
 import filterChildren from './filterChildren';
+import wasMadeUsing from './wasMadeUsing';
 
 type Router = React.Element<*>;
 
@@ -26,7 +27,7 @@ function containsReactComponent(route: Route | IndexRoute): bool {
   if(isExpressRoute(route)) return false;
   //NOTE: Remove in future version
 
-  if(route.type === Route || route.type === IndexRoute) {
+  if(wasMadeUsing(route, Route) || wasMadeUsing(route, IndexRoute)) {
     const { props } = route;
 
     // Check if this component has a react component

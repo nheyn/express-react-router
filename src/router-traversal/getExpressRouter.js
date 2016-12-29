@@ -6,6 +6,7 @@ import { Router, Route, IndexRoute } from 'react-router';
 
 import isExpressRoute from './isExpressRoute';
 import forEachRoute from './forEachRoute';
+import wasMadeUsing from './wasMadeUsing';
 
 import type { Router as ExpressRouter } from 'express';
 
@@ -19,7 +20,7 @@ import type { Router as ExpressRouter } from 'express';
  * @return        {ExpressRouter}     The router that handles all non page load requests
  */
 export default function getExpressRouter(router: Router): ExpressRouter {
-  if(router.type !== Router) throw new Error('Given router must be a react-router Router component.');
+  if(!wasMadeUsing(router, Router))  throw new Error('Given router must be a react-router Router component.');
 
   let expressRouter = express.Router();
 
@@ -30,7 +31,7 @@ export default function getExpressRouter(router: Router): ExpressRouter {
 }
 
 function addRouteToRouter(expressRouter: ExpressRouter, route: Router | Route | IndexRoute, path?: string) {
-  if(route.type !== Router && route.type !== Route && route.type !== IndexRoute) {
+  if(!wasMadeUsing(route, Router) && !wasMadeUsing(route, Route) && !wasMadeUsing(route, IndexRoute)) {
     //NOTE: Remove in future version
     if(!isExpressRoute(route)) {
     //NOTE: Remove in future version
