@@ -1,6 +1,7 @@
 /**
  * @flow
  */
+import React from 'react';
 import express from 'express';
 import { Router, Route, IndexRoute } from 'react-router';
 
@@ -19,7 +20,13 @@ import type { Router as ExpressRouter } from 'express';
  * @return        {ExpressRouter}     The router that handles all non page load requests
  */
 export default function getExpressRouter(router: Router): ExpressRouter {
-  if(!wasMadeUsing(router, Router))  throw new Error('Given router must be a react-router Router component.');
+  // Skip wrapper components (like react-redux Provider)
+  if(!wasMadeUsing(router, Router)) {
+    if(React.Children.count(router.props.children) !== 1) throw new Error('Must be given a single root Router.');
+    const child = React.Children.only(router.props.children);
+
+    return getExpressRouter(child);
+  }
 
   let expressRouter = express.Router();
 
