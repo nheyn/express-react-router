@@ -8,7 +8,7 @@ import { Router, Route, IndexRoute } from 'react-router';
 import forEachRoute from './forEachRoute';
 import wasMadeUsing from './wasMadeUsing';
 
-import type { Router as ExpressRouter } from 'express';
+import type { Router as ExpressRouter, Middleware } from 'express';
 
 /**
  * Gets the express router defined in the react router Route.
@@ -42,21 +42,54 @@ function addRouteToRouter(expressRouter: ExpressRouter, route: Router | Route | 
   }
 
   // Check and add routers for each method
-  ['use', 'all', 'get', 'post', 'put', 'delete'].forEach((method) => {
-    const currRouter = route.props[method];
-    if(!currRouter) return;
+  const routerPropsHas = (method: 'use' | 'all' | 'get' | 'post' | 'put' | 'delete'): bool => {
+    return route.props[method]? true: false;
+  };
+  const getArrayOfRouters = (method: 'use' | 'all' | 'get' | 'post' | 'put' | 'delete'): Array<Middleware> => {
+    return Array.isArray(route.props[method])? route.props[method]: [ route.props[method] ];
+  };
 
-    // $FlowFixMe
-    const currMethod = expressRouter[method];
-    if(path) {
-      if(Array.isArray(currRouter)) currMethod(path, ...currRouter);
-      else                          currMethod(path, currRouter);
-    }
-    else {
-      if(Array.isArray(currRouter)) currMethod(...currRouter);
-      else                          currMethod(currRouter);
-    }
-  });
+  if(routerPropsHas('use')) {
+    const currRouters = getArrayOfRouters('use');
+
+    if(path)  expressRouter.use(path, ...currRouters)
+    else      expressRouter.use(...currRouters);
+  }
+
+  if(routerPropsHas('all')) {
+    const currRouters = getArrayOfRouters('all');
+
+    if(path)  expressRouter.all(path, ...currRouters)
+    else      expressRouter.all(...currRouters);
+  }
+
+  if(routerPropsHas('get')) {
+    const currRouters = getArrayOfRouters('get');
+
+    if(path)  expressRouter.get(path, ...currRouters)
+    else      expressRouter.get(...currRouters);
+  }
+
+  if(routerPropsHas('post')) {
+    const currRouters = getArrayOfRouters('post');
+
+    if(path)  expressRouter.post(path, ...currRouters)
+    else      expressRouter.post(...currRouters);
+  }
+
+  if(routerPropsHas('put')) {
+    const currRouters = getArrayOfRouters('put');
+
+    if(path)  expressRouter.put(path, ...currRouters)
+    else      expressRouter.put(...currRouters);
+  }
+
+  if(routerPropsHas('delete')) {
+    const currRouters = getArrayOfRouters('delete');
+
+    if(path)  expressRouter.delete(path, ...currRouters)
+    else      expressRouter.delete(...currRouters);
+  }
 
   // Check and add router for static files to serve
   if(route.props.src) {
