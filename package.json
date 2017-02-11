@@ -21,10 +21,10 @@
     "babel-plugin-transform-object-rest-spread": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-latest": "^6.16.0",
-    "express": "^4.14.0",
-    "flow-bin": "^0.37.4",
-    "react": "^15.4.1",
-    "react-router": "^3.0.0"
+    "express": "^4.14.1",
+    "flow-bin": "^0.39.0",
+    "react": "^15.4.2",
+    "react-router": "^3.0.2"
   },
   "scripts": {
     "flow": "flow check",
