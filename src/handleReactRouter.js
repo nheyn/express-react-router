@@ -2,12 +2,14 @@
  * @flow
  */
 import React from 'react';
+import { Router } from 'react-router';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
 import { match, RouterContext } from 'react-router';
 
 import getReactRouterRoute from './router-traversal/getReactRouterRoute';
 import getExpressRouter from './router-traversal/getExpressRouter';
+import wasMadeUsing from './router-traversal/wasMadeUsing';
 import addPropsToRouter from './addPropsToRouter';
 
 import type { $Request as Request, Router as ExpressRouter } from 'express';
@@ -60,8 +62,11 @@ export default function handleReactRouter(
   router.use(expressRouterFromRoute);
   // $FlowFixMe
   router.use((req, res, next) => {
+    // Skip wrapper components (like react-redux Provider)
+    const { routes, rewrapRouter } = unwrapRouter(reactRouterRoutes);
+
     // Render current route
-    match({ routes: reactRouterRoutes, location: req.url }, (err, redirectLocation, renderProps) => {
+    match({ routes, location: req.url }, (err, redirectLocation, renderProps) => {
       if(err) {
         // Handle errors below
         next(err);
@@ -77,8 +82,9 @@ export default function handleReactRouter(
         if(propArgs.length) routerContextElement = addPropsToRouter(routerContextElement, getAllProps(req));
 
         // Render page with current element from router
-        const renderedReactHtml = ReactDOMServer.renderToString(routerContextElement);
+        const renderedReactHtml = ReactDOMServer.renderToString(rewrapRouter(routerContextElement));
         const pageHtml = ReactDOMServer.renderToStaticMarkup(
+          //TODO, rewrap router agian because match(...) is a horibly written function
           <PageComponent req={req} reactHtml={renderedReactHtml} />
         );
 
@@ -129,4 +135,30 @@ function isPageNotFoundRoutes(routes: Array<any>): bool {
   // Check if last char is wild chard, NOTE: means any wildcard (non-404) pages must use params
   const lastCharInPath = currRoutes.path.charAt(currRoutes.path.length-1);
   return lastCharInPath === '*';
+}
+
+function unwrapRouter(
+  el: React.Element<*>,
+  rewrapRouter?: (el: React.Element<*>) => React.Element<*>,
+): { routes: React.Element<*>, rewrapRouter: (el: React.Element<*>) => React.Element<*> } {
+  if(wasMadeUsing(el, Router)) {
+    return {
+      routes: el,
+      rewrapRouter(currEl) {
+        return rewrapRouter? rewrapRouter(currEl): currEl;
+      },
+    };
+  }
+
+  if(React.Children.count(el.props.children) !== 1) throw new Error('Must be given a single root Router.');
+  const child = React.Children.only(el.props.children);
+
+  return unwrapRouter(
+    child,
+    (childEl) => {
+      const wrappedEl = React.cloneElement(el, null, childEl);
+
+      return rewrapRouter? rewrapRouter(wrappedEl): wrappedEl;
+    },
+  );
 }
