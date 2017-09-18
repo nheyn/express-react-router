@@ -1,6 +1,8 @@
 # Express React Router
 *Middleware for Express that Serves React Router Websites*
 
+__NOTE__ Because of the major changes between v3 and v4 of react-router, this project has been deprecated. For more info on server side routing in v4, see https://reacttraining.com/react-router/web/guides/server-rendering.
+
 Creates a middleware router for [express.js](http://expressjs.com) that will render a [react-router](https://github.com/rackt/react-router) website on the server.
 Also includes a new react render function for the client side, that helps with creating isomorphic websites (uses same route on client and server).
 
